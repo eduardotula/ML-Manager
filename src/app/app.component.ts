@@ -7,4 +7,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ML-Manager-Front';
+
+  users = [
+    { id: 1, name: 'John', age: 25 },
+    { id: 2, name: 'Jane', age: 30 },
+    { id: 3, name: 'Doe', age: 22 }
+  ];
 }
