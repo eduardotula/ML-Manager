@@ -4,7 +4,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgFor } from '@angular/common';
+import { MlServiceService } from './services/ml-service.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -14,8 +15,9 @@ import { NgFor } from '@angular/common';
     BrowserModule,
     AppRoutingModule,
     NgbModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [ MlServiceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
