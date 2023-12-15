@@ -1,19 +1,19 @@
 export class Produto {
-    private id: number;
-    private mlId: string;
-    private sku: string;
-    private gtin: string;
-    private url: string;
-    private descricao: string;
-    private categoria: string;
-    private custo: number;
-    private csosn: string;
-    private precoDesconto: number;
-    private taxaML: number;
-    private custoFrete: number;
-    private status: string;
-    private createdAt: Date;
-    private lucro: number;
+    public id: number;
+    public mlId: string;
+    public sku: string;
+    public gtin: string;
+    public url: string;
+    public descricao: string;
+    public categoria: string;
+    public custo: number;
+    public csosn: string;
+    public precoDesconto: number;
+    public taxaML: number;
+    public custoFrete: number;
+    public status: string;
+    public createdAt: Date;
+    public lucro: number;
 
     // Constructor
     constructor(

@@ -10,7 +10,7 @@ import { Produto } from './models/Produto';
 })
 export class MlServiceService extends CommonService{
 
-  url: string = "http://localhost:8080/produto/"
+  url: string = 'http://localhost:8080/produto/'
 
   constructor(
     private http: HttpClient
@@ -18,13 +18,14 @@ export class MlServiceService extends CommonService{
     super();
   }
 
-  listAllActivesProdutosIds(): string[]{
-    var mlIds: string[] = [];
-    this.http.get<string[]>(this.url + "/list/ml/active").subscribe(response => {
-      mlIds = response;
-    });
+  listAllActivesProdutosIds(): Observable<string[]>{
+    return this.http.get<string[]>(this.url + "list/ml/active", this.httpOptions).pipe(catchError(this.handleError));
+  }
 
-    return mlIds;
+  listAll(): Observable<Produto[]>{
+    return this.http.get<Produto[]>(this.url + "all", this.httpOptions).pipe(
+      catchError(this.handleError)
+    );
   }
 
   getProdutoByMlId(mlId: String): Observable<Produto>{

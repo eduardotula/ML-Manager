@@ -5,38 +5,64 @@
     <h3 style="color: white;">ML Manager</h3>
   </div>
 </header>
-<div class="container-xxl content">
 
-  <div class="">
+<div class="alert alert-danger" *ngIf="errorMsg"> {{errorMsg}}</div>
+
+<div class="container-xxl content" *ngIf="!errorMsg">
+
+  <div >
     <form>
       <div class="mb-3 row" style="margin-right: 10px; margin-left: 10px;">
         <label for="table-filtering-search" class="col-form-label">Buscar:</label>
         <div class="col-sm" >
-          <input id="table-filtering-search" class="form-control" type="text" />
+          <input id="table-filtering-search" class="form-control" type="text" [formControl]="filter"/>
         </div>
       </div>
     </form>
   
     <div class="table-responsive">
       <table class="table caption-top">
-        <caption>List of users</caption>
+        <caption>Anuncios Mercado Livre</caption>
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
+            <th scope="col">mlId</th>
+            <th scope="col">sku</th>
+            <th scope="col">gtin</th>
+            <th scope="col">Descrição</th>
+            <th scope="col">Custo</th>
+            <th scope="col">Venda</th>
+            <th scope="col">TaxaML</th>
+            <th scope="col">Frete</th>
+            <th scope="col">Lucro</th>
+            <th scope="col">Status</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of users">
-            <td>{{ item.id }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.age }}</td>
+          <tr *ngFor="let produto of produtosTemp | async;">
+            
+            <td>{{ produto.id }}</td>
+            <td class="clickMlIdUrl" (click)="openProdutoPage(produto.url)">{{ produto.mlId }}</td>
+            <td>{{ produto.sku }}</td>
+            <td>{{ produto.gtin }}</td>
+            <td>{{ produto.descricao }}</td>
+            <td>{{ produto.custo  | currency: "BRL" }}</td>
+            <td>{{ produto.precoDesconto | currency: "BRL" }}</td>
+            <td>{{ produto.taxaML  | currency: "BRL" }}</td>
+            <td>{{ produto.custoFrete  | currency: "BRL" }}</td>
+            <td>{{ produto.lucro  | currency: "BRL" }}</td>
+            <td *ngIf="produto.status == 'active'; else pausado"> Ativo</td>
+            <ng-template #pausado>
+              <td> Pausado</td>
+            </ng-template>
           </tr>
           
         </tbody>
       </table>
   </div>
+  
+
   </div>
+
 </div>
 

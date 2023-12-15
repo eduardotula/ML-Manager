@@ -32,7 +32,7 @@ export abstract class CommonService {
       'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json',
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, PATCH, DELETE",
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Headers': 'Content-Type, Accept',
     }),
   };
 
