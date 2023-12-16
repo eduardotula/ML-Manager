@@ -43,6 +43,16 @@ export class MlServiceService extends CommonService{
     return this.http.post<Produto>(this.url + "simple", produto).pipe(catchError(this.handleError));
   }
 
-    
+  updateProdutoSimple(produto: ProdutoSimple): Observable<Produto>{
+    return this.http.put<Produto>(this.url + "simple", produto).pipe(catchError(this.handleError));
+  }
+
+  deleteProdutoById(id: number): Observable<null>{
+    return this.http.delete<null>(this.url + id ).pipe(catchError(this.handleError));
+  }
+
+  updateProdutoSearchByMlId(mlId: string): Observable<Produto>{
+    return this.http.put<Produto>(this.url + "/simple/" + mlId, {}).pipe(catchError(this.handleError));
+  }
 
 }

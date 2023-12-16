@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MlServiceService } from 'src/app/services/ml-service.service';
 import { Produto } from 'src/app/services/models/Produto';
 import { ProdutoSimple } from 'src/app/services/models/ProdutoSimple';
@@ -15,9 +16,18 @@ export class CadastrarProdutoComponent implements OnInit {
   productForm!: FormGroup;
   mlIds!: string[];
   name: any;
+  isCreate: boolean = true;
   errorMsg: string = "";
 
-  constructor(private formBuilder: FormBuilder, public service: MlServiceService) {
+  constructor(private formBuilder: FormBuilder, public service: MlServiceService, public route: ActivatedRoute, public router: Router) {
+    this.route.queryParams.subscribe(params =>{
+      this.productForm = this.formBuilder.group({
+        mlId: [params['mlId'], Validators.required],
+        custo: [params['custo'], Validators.required],
+        csosn: [params['csosn'], Validators.required],
+      })
+      this.isCreate = false;
+    });
   }
 
 
@@ -29,11 +39,14 @@ export class CadastrarProdutoComponent implements OnInit {
       },
       error: (msg) => this.errorMsg = msg.message
     });
-    this.productForm = this.formBuilder.group({
-      mlId: ["", Validators.required],
-      custo: ["", Validators.required],
-      csosn: [null, Validators.required],
-    });
+    if(!this.productForm.valid){
+      this.productForm = this.formBuilder.group({
+        mlId: ["", Validators.required],
+        custo: ["", Validators.required],
+        csosn: [null, Validators.required],
+      });
+    }
+
   }
 
   get mlId(){
@@ -53,13 +66,24 @@ export class CadastrarProdutoComponent implements OnInit {
     if (this.productForm.valid) {
       var produtoSimple = new ProdutoSimple(this.productForm.value["mlId"], this.productForm.value["csosn"], this.productForm.value["custo"]);
       this.loading = true;
-      this.service.createProdutoSearch(produtoSimple).subscribe({
-        next: () => window.location.reload(),
-        error: (error) => {
-          this.errorMsg = error.message;
-          this.loading = false;
-        }
-        });
+      if(this.isCreate){
+        this.service.createProdutoSearch(produtoSimple).subscribe({
+          next: () => window.location.reload(),
+          error: (error) => {
+            this.errorMsg = error.message;
+            this.loading = false;
+          }
+          });
+      }else{
+        this.service.updateProdutoSimple(produtoSimple).subscribe({
+          next: () => this.router.navigate([""]),
+          error: (error) => {
+            this.errorMsg = error.message;
+            this.loading = false;
+          }
+          });
+      }
+
     } else {
       console.log('Form is invalid');
     }

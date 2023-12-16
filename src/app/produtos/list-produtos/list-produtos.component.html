@@ -1,7 +1,18 @@
 
-<div class="alert alert-danger" *ngIf="errorMsg"> {{errorMsg}}</div>
+<div class="alert alert-danger accordion" *ngIf="errorMsg">
+  <div class="accordion-item">
+    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+      Errors
+    </button>
+        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        {{errorMsg}}
+      </div>
+    </div>
+  </div>
+</div>
 
-<div  *ngIf="!errorMsg">
+<div>
   <div class="container-xxl">
     <form>
       <div class="mb-3 row" style="margin-right: 10px; margin-left: 10px;">
@@ -28,15 +39,21 @@
             <th scope="col">Frete</th>
             <th scope="col">Lucro</th>
             <th scope="col">Status</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col">
+              <img class="hover-icon" (click)="clickUpdateAll()" src="../../../assets/arrow-clockwise.svg" width="16" height="16">
+            </th>
           </tr>
         </thead>
 
         <tbody>
+
           <ngx-loading [show]="loading"></ngx-loading>
           <tr *ngFor="let produto of produtosTemp | async;">
             
             <td>{{ produto.id }}</td>
-            <td class="clickMlIdUrl" (click)="openProdutoPage(produto.url)">{{ produto.mlId }}</td>
+            <td class="click-ml-url" (click)="openProdutoPage(produto.url)">{{ produto.mlId }}</td>
             <td>{{ produto.sku }}</td>
             <td>{{ produto.gtin }}</td>
             <td>{{ produto.descricao }}</td>
@@ -49,6 +66,10 @@
             <ng-template #pausado>
               <td> Pausado</td>
             </ng-template>
+            <td><img class="hover-icon" (click)="clickEdit(produto)" src="../../../assets/pencil.svg" width="16" height="16"></td>
+            <td><img class="hover-icon" (click)="clickDelete(produto)" src="../../../assets/trash.svg" width="16" height="16"></td>
+            <td><img class="hover-icon" (click)="clickDelete(produto)" src="../../../assets/arrow-clockwise.svg" width="16" height="16"></td>
+
           </tr>
           
         </tbody>
