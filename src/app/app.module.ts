@@ -31,7 +31,7 @@ import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
             backdropBackgroundColour: 'rgba(0,0,0,0)',
             backdropBorderRadius: '4px',
             primaryColour: '#8a2be2'
-          })
+          }),
     ]
 })
 export class AppModule { }

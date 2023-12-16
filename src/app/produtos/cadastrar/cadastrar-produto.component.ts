@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MlServiceService } from 'src/app/services/ml-service.service';
-import { Produto } from 'src/app/services/models/Produto';
 import { ProdutoSimple } from 'src/app/services/models/ProdutoSimple';
 
 @Component({
@@ -26,7 +25,7 @@ export class CadastrarProdutoComponent implements OnInit {
         custo: [params['custo'], Validators.required],
         csosn: [params['csosn'], Validators.required],
       })
-      this.isCreate = false;
+      if(this.productForm.valid)this.isCreate = false;
     });
   }
 

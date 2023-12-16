@@ -14,6 +14,7 @@
 
 <div>
   <div class="container-xxl">
+    <p class="text-end click-ml-url" (click)="exportToExcel()">Baixar Excel</p>
     <form>
       <div class="mb-3 row" style="margin-right: 10px; margin-left: 10px;">
         <label for="table-filtering-search" class="col-form-label">Buscar:</label>
@@ -68,7 +69,7 @@
             </ng-template>
             <td><img class="hover-icon" (click)="clickEdit(produto)" src="../../../assets/pencil.svg" width="16" height="16"></td>
             <td><img class="hover-icon" (click)="clickDelete(produto)" src="../../../assets/trash.svg" width="16" height="16"></td>
-            <td><img class="hover-icon" (click)="clickDelete(produto)" src="../../../assets/arrow-clockwise.svg" width="16" height="16"></td>
+            <td><img class="hover-icon" (click)="clickUpdate(produto)" src="../../../assets/arrow-clockwise.svg" width="16" height="16"></td>
 
           </tr>
           
