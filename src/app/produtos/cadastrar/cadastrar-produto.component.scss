@@ -1,0 +1,12 @@
+.table-container{
+    max-height: 700px; /* Set your desired maximum height */
+    overflow-y: auto; /* Enable vertical scrollbar if needed */
+}
+
+.clikable{
+    cursor: pointer;
+}
+
+.alert{
+    margin-top: 10px;
+}

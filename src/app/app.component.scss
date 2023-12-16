@@ -1,18 +1,13 @@
-.content{
-    border: 2px solid #a7a7a7; 
-    border-radius: 10px; 
-    padding: 10px; 
-    margin-top: 10px;
-}
 header{
-    background-color: blueviolet;
-    padding-top: 20px;
-    padding-bottom: 20px;
+  background-color: blueviolet;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+a{
+  text-decoration: none;
+  color: white;
 }
 
-.clickMlIdUrl{
-    color: blue; /* Set the text color to blue */
-    text-decoration: underline; /* Add an underline to the text */
-    cursor: pointer;
+.list-item{
+  color: rgb(233, 233, 233);
 }
-
