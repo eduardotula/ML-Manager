@@ -69,6 +69,11 @@
             },
             "development": {
               "browserTarget": "ML-Manager-Front:build:development"
+            },
+            "options":{
+              "ssl": true,
+              "sslKey": "Cert_SSL/key.pem",
+              "sslCert": "Cert_SSL/cert.pem"
             }
           },
           "defaultConfiguration": "development"

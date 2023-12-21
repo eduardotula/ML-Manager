@@ -85,7 +85,11 @@ export class ListProdutosComponent {
       next: (produtosRegistrados) => {
 
         produtosRegistrados.forEach(prod => {
+
           this.service.updateProdutoSearchByMlId(prod.mlId).subscribe({
+            next: (prod) =>{
+              console.log(prod);
+            },
             error: () => {
               this.errorMsg += `Falha ao buscar atualização de produto: ${prod.mlId}`;
             }

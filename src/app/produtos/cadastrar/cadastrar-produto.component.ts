@@ -24,25 +24,35 @@ export class CadastrarProdutoComponent implements OnInit {
         mlId: [params['mlId'], Validators.required],
         custo: [params['custo'], Validators.required],
         csosn: [params['csosn'], Validators.required],
+        descricao: [params['descricao']],
+        sku: [params['sku']],
       })
+      if(params['mlId']) this.onTableClick(params["mlId"]);
+
       if(this.productForm.valid)this.isCreate = false;
     });
   }
 
 
   ngOnInit() {
+    this.resetPageState();
     this.service.listAllActiveMlMinusRegistered().subscribe({
       next: (ids) => {
         this.mlIds = ids;
         this.loading = false;
       },
-      error: (msg) => this.errorMsg = msg.message
+      error: (msg) => {
+        this.errorMsg = msg.message;
+        this.loading = false;
+      }
     });
     if(!this.productForm.valid){
       this.productForm = this.formBuilder.group({
         mlId: ["", Validators.required],
         custo: ["", Validators.required],
         csosn: [null, Validators.required],
+        sku: [""],
+        descricao: [""],
       });
     }
 
@@ -59,6 +69,14 @@ export class CadastrarProdutoComponent implements OnInit {
   get csosn(){
     return this.productForm.get("csosn");
   }
+
+  get descricao(){
+    return this.productForm.get("descricao");
+  }
+  get sku(){
+    return this.productForm.get("sku");
+  }
+
 
 
   onSubmit() {
@@ -89,8 +107,25 @@ export class CadastrarProdutoComponent implements OnInit {
   }
 
   onTableClick(mlId: string){
+    this.loading = true;
+    this.service.getProdutoByMlIdSearch(mlId).subscribe({next: (prod) => {
+      this.productForm.patchValue({
+        descricao: prod.descricao,
+        sku: prod.sku
+      })
+      this.resetPageState();
+    }, error: (erro) => {
+      this.loading = false;
+      this.errorMsg = "Falha ao obter descrição de produto"
+    }});
+
     this.productForm.patchValue({
       mlId: mlId,
     })
+  }
+
+  resetPageState(){
+    this.loading = false;
+    this.errorMsg = "";
   }
 }

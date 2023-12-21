@@ -38,6 +38,12 @@ export class MlServiceService extends CommonService{
       catchError(this.handleError)
     );
   }
+  
+  getProdutoByMlIdSearch(mlId: String): Observable<Produto>{
+    return this.http.get<Produto>(this.url + mlId + "/search", this.httpOptions).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   createProdutoSearch(produto: ProdutoSimple): Observable<Produto>{
     return this.http.post<Produto>(this.url + "simple", produto).pipe(catchError(this.handleError));
