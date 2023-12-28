@@ -1,53 +1,41 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Observable, lastValueFrom, of, startWith, map } from 'rxjs';
+import { Component, OnDestroy } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Observable, of, startWith, map, forkJoin, Subject } from 'rxjs';
 import { MlServiceService } from 'src/app/services/ml-service.service';
 import { Produto } from 'src/app/services/models/Produto';
 import * as ExcelJS from 'exceljs';
-
+import { Router } from '@angular/router';
+import { DefaultTableMethods } from 'src/app/default-components/default-table/default-table';
 
 @Component({
   selector: 'app-list-produtos',
   templateUrl: "./list-produtos.component.html",
   styleUrls: ['./list-produtos.component.scss'],
 })
-export class ListProdutosComponent {
+export class ListProdutosComponent extends DefaultTableMethods<Produto>{
 
   loading = true;
-  produtos: Produto[] = [];
-  produtosTemp!: Observable<Produto[]>;
   filter = new FormControl('', { nonNullable: true });
   errorMsg: string = "";
 
   constructor(public service: MlServiceService, public router: Router) {
+    super();
     this.errorMsg = ""
    }
-
-
 
   ngOnInit(): void {
     this.service.listAll().subscribe({
       next: (prods) => {
-        this.produtos = prods;
-        this.produtosTemp = of(prods);
-        this.produtosTemp = this.filter.valueChanges.pipe(
+        this.items = prods;
+        this.items.forEach((item) => item.searchField = item.descricao);
+        this.itemsTemp = of(prods);
+        this.itemsTemp = this.filter.valueChanges.pipe(
           startWith(''), map((text) => this.search(text)),
         );
         this.loading = false;
       }, error: (error) => this.errorMsg = error.message
     });
     
-  }
-
-  search(text: string): Produto[] {
-    return this.produtos.filter((produto) => {
-      const term = text.toLowerCase();
-      return (
-        produto.descricao.toLowerCase().includes(term)
-      );
-    });
   }
 
   openProdutoPage(url: string) {
@@ -78,26 +66,32 @@ export class ListProdutosComponent {
       error: (err) => this.errorMsg = err.message
     });
   }
-
   clickUpdateAll() {
     this.errorMsg = "";
     this.service.listAll().subscribe({
       next: (produtosRegistrados) => {
+        const requests = produtosRegistrados.map(prod => {
+          return this.service.updateProdutoSearchByMlId(prod.mlId);
+        });
+        this.loading = true;
 
-        produtosRegistrados.forEach(prod => {
-
-          this.service.updateProdutoSearchByMlId(prod.mlId).subscribe({
-            next: (prod) =>{
-              console.log(prod);
-            },
-            error: () => {
-              this.errorMsg += `Falha ao buscar atualização de produto: ${prod.mlId}`;
-            }
-          });
-        })
-        if(!this.errorMsg) window.location.reload();
+        forkJoin(requests).subscribe(
+          (results) => {
+            console.log(results); // Array of results from individual updateProdutoSearchByMlId requests
+            window.location.reload();
+          },
+          (error) => {
+            console.error('Error updating products:', error);
+            this.errorMsg = 'Erro ao atualizar produtos';
+            this.loading = false;
+          }
+        );
+      },
+      error: (listError) => {
+        console.error('Error fetching product list:', listError);
+        this.errorMsg = 'Erro ao obter lista de produtos';
       }
-    })
+    });
   }
 
   exportToExcel(){
@@ -119,7 +113,7 @@ export class ListProdutosComponent {
     ];
     
     var data: any = []
-    this.produtosTemp.subscribe(prods => prods.forEach(prod =>{
+    this.itemsTemp.subscribe(prods => prods.forEach(prod =>{
       let line = [
         prod.mlId, prod.sku, prod.gtin, prod.url, prod.descricao, prod.categoria, prod.custo, prod.precoDesconto, prod.taxaML, prod.custoFrete, prod.lucro,prod.status
       ]

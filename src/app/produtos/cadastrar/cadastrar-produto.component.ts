@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DefaultTableMethods } from 'src/app/default-components/default-table/default-table';
 import { MlServiceService } from 'src/app/services/ml-service.service';
+import { Produto } from 'src/app/services/models/Produto';
 import { ProdutoSimple } from 'src/app/services/models/ProdutoSimple';
 
 @Component({
@@ -36,6 +38,7 @@ export class CadastrarProdutoComponent implements OnInit {
 
   ngOnInit() {
     this.resetPageState();
+    this.loading = true;
     this.service.listAllActiveMlMinusRegistered().subscribe({
       next: (ids) => {
         this.mlIds = ids;

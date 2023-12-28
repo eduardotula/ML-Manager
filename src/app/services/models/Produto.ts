@@ -1,4 +1,6 @@
-export class Produto {
+import { Searchable } from "src/app/default-components/default-table/Searchable";
+
+export class Produto implements Searchable{
     public id: number;
     public mlId: string;
     public sku: string;
@@ -14,6 +16,7 @@ export class Produto {
     public status: string;
     public createdAt: Date;
     public lucro: number;
+    public searchField: string = "";
 
     // Constructor
     constructor(
@@ -48,5 +51,7 @@ export class Produto {
         this.status = status;
         this.createdAt = createdAt;
         this.lucro = lucro;
+        //Utilizado para busca
+        this.searchField = descricao;
     }
 }
