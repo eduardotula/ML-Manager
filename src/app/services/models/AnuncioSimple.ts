@@ -1,4 +1,4 @@
-export class ProdutoSimple{
+export class AnuncioSimple{
 
     public mlId: string;
     public csosn: string;

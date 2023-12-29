@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { Searchable } from './Searchable';
-import { Observable } from 'rxjs';
-import { Produto } from 'src/app/services/models/Produto';
 
 @Injectable({
     providedIn: 'root',
@@ -9,10 +8,11 @@ import { Produto } from 'src/app/services/models/Produto';
 export abstract class DefaultTableMethods<T extends Searchable> {
 
     public items: T[];
-    public itemsTemp!: Observable<T[]>;
+    public itemsTemp: Observable<T[]>;
 
     constructor(){
         this.items = [];
+        this.itemsTemp = of([]);
     }
 
     search(text: string): T[] {

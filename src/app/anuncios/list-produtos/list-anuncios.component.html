@@ -52,25 +52,25 @@
           <tbody>
   
             <ngx-loading [show]="loading"></ngx-loading>
-            <tr  *ngFor="let produto of itemsTemp | async">
+            <tr  *ngFor="let Anuncio of itemsTemp | async">
               
-              <td>{{ produto.id }}</td>
-              <td class="click-ml-url" (click)="openProdutoPage(produto.url)">{{ produto.mlId }}</td>
-              <td class="text-break" style="width: 100px;">{{ produto.sku }}</td>
-              <td>{{ produto.gtin }}</td>
-              <td>{{ produto.descricao }}</td>
-              <td>{{ produto.custo  | currency: "BRL" }}</td>
-              <td>{{ produto.precoDesconto | currency: "BRL" }}</td>
-              <td>{{ produto.taxaML  | currency: "BRL" }}</td>
-              <td>{{ produto.custoFrete  | currency: "BRL" }}</td>
-              <td  style="min-width: 80px;">{{ produto.lucro  | currency: "BRL" }}</td>
-              <td *ngIf="produto.status == 'active'; else pausado"> Ativo</td>
+              <td>{{ Anuncio.id }}</td>
+              <td class="click-ml-url" (click)="openAnuncioPage(Anuncio.url)">{{ Anuncio.mlId }}</td>
+              <td class="text-break" style="width: 100px;">{{ Anuncio.sku }}</td>
+              <td>{{ Anuncio.gtin }}</td>
+              <td>{{ Anuncio.descricao }}</td>
+              <td>{{ Anuncio.custo  | currency: "BRL" }}</td>
+              <td>{{ Anuncio.precoDesconto | currency: "BRL" }}</td>
+              <td>{{ Anuncio.taxaML  | currency: "BRL" }}</td>
+              <td>{{ Anuncio.custoFrete  | currency: "BRL" }}</td>
+              <td  style="min-width: 80px;">{{ Anuncio.lucro  | currency: "BRL" }}</td>
+              <td *ngIf="Anuncio.status == 'active'; else pausado"> Ativo</td>
               <ng-template #pausado>
                 <td> Pausado</td>
               </ng-template>
-              <td><img class="hover-icon" (click)="clickEdit(produto)" src="../../../assets/pencil.svg" width="16" height="16"></td>
-              <td><img class="hover-icon" (click)="clickDelete(produto)" src="../../../assets/trash.svg" width="16" height="16"></td>
-              <td><img class="hover-icon" (click)="clickUpdate(produto)" src="../../../assets/arrow-clockwise.svg" width="16" height="16"></td>
+              <td><img class="hover-icon" (click)="clickEdit(Anuncio)" src="../../../assets/pencil.svg" width="16" height="16"></td>
+              <td><img class="hover-icon" (click)="clickDelete(Anuncio)" src="../../../assets/trash.svg" width="16" height="16"></td>
+              <td><img class="hover-icon" (click)="clickUpdate(Anuncio)" src="../../../assets/arrow-clockwise.svg" width="16" height="16"></td>
   
             </tr>
             

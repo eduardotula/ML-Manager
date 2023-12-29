@@ -6,20 +6,23 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MlServiceService } from './services/ml-service.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ListProdutosComponent } from './produtos/list-produtos/list-produtos.component';
-import { CadastrarProdutoComponent } from './produtos/cadastrar/cadastrar-produto.component';
+import { CadastrarAnuncioComponent } from './anuncios/cadastrar/cadastrar-anuncio.component';
 import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
-import { DefaultTableMethods } from './default-components/default-table/default-table';
 import { ListVendasComponent } from './venda/list-vendas/list-vendas.component';
+import { ListAnunciosComponent } from './anuncios/list-produtos/list-anuncios.component';
+import { TableFilterPropertyPipe } from './pipes/table-filter-property.pipe';
+import { TableSortPipe } from './pipes/table-sort.pipe';
 
 
 
 @NgModule({
     declarations: [
         AppComponent,
-        ListProdutosComponent,
-        CadastrarProdutoComponent,
-        ListVendasComponent
+        ListAnunciosComponent,
+        CadastrarAnuncioComponent,
+        ListVendasComponent,
+        TableFilterPropertyPipe,
+        TableSortPipe
     ],
     providers: [MlServiceService],
     bootstrap: [AppComponent],

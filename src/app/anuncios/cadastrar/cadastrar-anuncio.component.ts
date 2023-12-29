@@ -1,17 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DefaultTableMethods } from 'src/app/default-components/default-table/default-table';
 import { MlServiceService } from 'src/app/services/ml-service.service';
-import { Produto } from 'src/app/services/models/Produto';
-import { ProdutoSimple } from 'src/app/services/models/ProdutoSimple';
+import { AnuncioSimple } from 'src/app/services/models/AnuncioSimple';
 
 @Component({
-  selector: 'app-cadastrar-produto',
-  templateUrl: './cadastrar-produto.component.html',
-  styleUrls: ['./cadastrar-produto.component.scss'],
+  selector: 'app-cadastrar-anuncio',
+  templateUrl: './cadastrar-anuncio.component.html',
+  styleUrls: ['./cadastrar-anuncio.component.scss'],
 })
-export class CadastrarProdutoComponent implements OnInit {
+export class CadastrarAnuncioComponent implements OnInit {
   
   loading: boolean = true;
   productForm!: FormGroup;
@@ -84,10 +82,10 @@ export class CadastrarProdutoComponent implements OnInit {
 
   onSubmit() {
     if (this.productForm.valid) {
-      var produtoSimple = new ProdutoSimple(this.productForm.value["mlId"], this.productForm.value["csosn"], this.productForm.value["custo"]);
+      var anuncioSimple = new AnuncioSimple(this.productForm.value["mlId"], this.productForm.value["csosn"], this.productForm.value["custo"]);
       this.loading = true;
       if(this.isCreate){
-        this.service.createProdutoSearch(produtoSimple).subscribe({
+        this.service.createAnuncioSearch(anuncioSimple).subscribe({
           next: () => window.location.reload(),
           error: (error) => {
             this.errorMsg = error.message;
@@ -95,7 +93,7 @@ export class CadastrarProdutoComponent implements OnInit {
           }
           });
       }else{
-        this.service.updateProdutoSimple(produtoSimple).subscribe({
+        this.service.updateAnuncioSimple(anuncioSimple).subscribe({
           next: () => this.router.navigate([""]),
           error: (error) => {
             this.errorMsg = error.message;
@@ -111,7 +109,7 @@ export class CadastrarProdutoComponent implements OnInit {
 
   onTableClick(mlId: string){
     this.loading = true;
-    this.service.getProdutoByMlIdSearch(mlId).subscribe({next: (prod) => {
+    this.service.getAnuncioByMlIdSearch(mlId).subscribe({next: (prod) => {
       this.productForm.patchValue({
         descricao: prod.descricao,
         sku: prod.sku
@@ -119,7 +117,7 @@ export class CadastrarProdutoComponent implements OnInit {
       this.resetPageState();
     }, error: (erro) => {
       this.loading = false;
-      this.errorMsg = "Falha ao obter descrição de produto"
+      this.errorMsg = "Falha ao obter descrição de Anuncio"
     }});
 
     this.productForm.patchValue({

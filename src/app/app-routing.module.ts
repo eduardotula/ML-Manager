@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ListProdutosComponent } from './produtos/list-produtos/list-produtos.component';
-import { CadastrarProdutoComponent } from './produtos/cadastrar/cadastrar-produto.component';
+import { CadastrarAnuncioComponent } from './anuncios/cadastrar/cadastrar-anuncio.component';
 import { ListVendasComponent } from './venda/list-vendas/list-vendas.component';
+import { ListAnunciosComponent } from './anuncios/list-produtos/list-anuncios.component';
 
 const routes: Routes = [
-  { path: "", component: ListProdutosComponent},
-  { path: "cadastrar-produto", component: CadastrarProdutoComponent},
+  { path: "", component: ListAnunciosComponent},
+  { path: "cadastrar-anuncio", component: CadastrarAnuncioComponent},
   { path: "list-vendas", component: ListVendasComponent},
 
 ];

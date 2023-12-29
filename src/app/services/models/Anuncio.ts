@@ -1,6 +1,6 @@
 import { Searchable } from "src/app/default-components/default-table/Searchable";
 
-export class Produto implements Searchable{
+export class Anuncio implements Searchable{
     public id: number;
     public mlId: string;
     public sku: string;

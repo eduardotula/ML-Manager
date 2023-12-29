@@ -2,21 +2,23 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, of, startWith, map, forkJoin, Subject } from 'rxjs';
 import { MlServiceService } from 'src/app/services/ml-service.service';
-import { Produto } from 'src/app/services/models/Produto';
+import { Anuncio } from 'src/app/services/models/Anuncio';
 import * as ExcelJS from 'exceljs';
 import { Router } from '@angular/router';
 import { DefaultTableMethods } from 'src/app/default-components/default-table/default-table';
 
 @Component({
-  selector: 'app-list-produtos',
-  templateUrl: "./list-produtos.component.html",
-  styleUrls: ['./list-produtos.component.scss'],
+  selector: 'app-list-anuncios',
+  templateUrl: "./list-anuncios.component.html",
+  styleUrls: ['./list-anuncios.component.scss'],
 })
-export class ListProdutosComponent extends DefaultTableMethods<Produto>{
+export class ListAnunciosComponent extends DefaultTableMethods<Anuncio>{
 
   loading = true;
   filter = new FormControl('', { nonNullable: true });
   errorMsg: string = "";
+  orderColumn = 'id';
+  orderDirection = 'asc';
 
   constructor(public service: MlServiceService, public router: Router) {
     super();
@@ -38,65 +40,73 @@ export class ListProdutosComponent extends DefaultTableMethods<Produto>{
     
   }
 
-  openProdutoPage(url: string) {
+  openAnuncioPage(url: string) {
     window.open(url);
   }
 
-  clickEdit(produto: Produto) {
-    this.router.navigate(["/cadastrar-produto"], {
+  clickEdit(anuncio: Anuncio) {
+    this.router.navigate(["/cadastrar-anuncio"], {
       queryParams: {
-        mlId: produto.mlId,
-        custo: produto.custo,
-        csosn: produto.csosn
+        mlId: anuncio.mlId,
+        custo: anuncio.custo,
+        csosn: anuncio.csosn
       }
     });
   }
+  sort(column: string): void {
+    if (this.orderColumn === column) {
+      this.orderDirection = this.orderDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.orderColumn = column;
+      this.orderDirection = 'asc';
+    }
+  }
 
-  clickDelete(produto: Produto) {
-    this.service.deleteProdutoById(produto.id).subscribe({
+  clickDelete(anuncio: Anuncio) {
+    this.service.deleteAnuncioById(anuncio.id).subscribe({
       next: () => window.location.reload(),
       error: (err) => this.errorMsg = err.message
 
     });
   }
 
-  clickUpdate(produto: Produto) {
-    this.service.updateProdutoSearchByMlId(produto.mlId).subscribe({
+  clickUpdate(anuncio: Anuncio) {
+    this.service.updateAnuncioSearchByMlId(anuncio.mlId).subscribe({
       next: () => window.location.reload(),
       error: (err) => this.errorMsg = err.message
     });
   }
+
   clickUpdateAll() {
     this.errorMsg = "";
     this.service.listAll().subscribe({
-      next: (produtosRegistrados) => {
-        const requests = produtosRegistrados.map(prod => {
-          return this.service.updateProdutoSearchByMlId(prod.mlId);
+      next: (anunciosRegistrados) => {
+        const requests = anunciosRegistrados.map(prod => {
+          return this.service.updateAnuncioSearchByMlId(prod.mlId);
         });
         this.loading = true;
 
         forkJoin(requests).subscribe(
           (results) => {
-            console.log(results); // Array of results from individual updateProdutoSearchByMlId requests
             window.location.reload();
           },
           (error) => {
-            console.error('Error updating products:', error);
-            this.errorMsg = 'Erro ao atualizar produtos';
+            console.error('Error updating Anuncios:', error);
+            this.errorMsg = 'Erro ao atualizar Anuncios';
             this.loading = false;
           }
         );
       },
       error: (listError) => {
         console.error('Error fetching product list:', listError);
-        this.errorMsg = 'Erro ao obter lista de produtos';
+        this.errorMsg = 'Erro ao obter lista de Anuncios';
       }
     });
   }
 
   exportToExcel(){
     var workbook = new ExcelJS.Workbook();
-    var worksheet = workbook.addWorksheet("Produtos");
+    var worksheet = workbook.addWorksheet("Anuncios");
     var columns = [
       { name: 'mlId', width: 14 },
       { name: 'sku',  width: 20 },
@@ -121,7 +131,7 @@ export class ListProdutosComponent extends DefaultTableMethods<Produto>{
     }))
     
     worksheet.addTable({
-      name: "Produtos",
+      name: "Anuncios",
       ref: "A1",
       columns: columns,
       rows: data

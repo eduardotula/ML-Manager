@@ -2,8 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
 import { CommonService } from './common.service';
-import { Produto } from './models/Produto';
-import { ProdutoSimple } from './models/ProdutoSimple';
+import { Anuncio } from './models/Anuncio';
+import { AnuncioSimple } from './models/AnuncioSimple';
 
 
 @Injectable({
@@ -11,7 +11,7 @@ import { ProdutoSimple } from './models/ProdutoSimple';
 })
 export class MlServiceService extends CommonService{
 
-  url: string = 'http://localhost:8080/produto/'
+  url: string = 'http://localhost:8080/anuncio/'
 
   constructor(
     private http: HttpClient
@@ -19,7 +19,7 @@ export class MlServiceService extends CommonService{
     super();
   }
 
-  listAllActivesProdutosIds(): Observable<string[]>{
+  listAllActivesAnunciosIds(): Observable<string[]>{
     return this.http.get<string[]>(this.url + "list/ml/active", this.httpOptions).pipe(catchError(this.handleError));
   }
 
@@ -27,38 +27,38 @@ export class MlServiceService extends CommonService{
     return this.http.get<string[]>(this.url + "list/ml/active/dife", this.httpOptions).pipe(catchError(this.handleError));
   }
 
-  listAll(): Observable<Produto[]>{
-    return this.http.get<Produto[]>(this.url + "all", this.httpOptions).pipe(
+  listAll(): Observable<Anuncio[]>{
+    return this.http.get<Anuncio[]>(this.url + "all", this.httpOptions).pipe(
       catchError(this.handleError)
     );
   }
 
-  getProdutoByMlId(mlId: String): Observable<Produto>{
-    return this.http.get<Produto>(this.url + mlId, this.httpOptions).pipe(
+  getAnuncioByMlId(mlId: String): Observable<Anuncio>{
+    return this.http.get<Anuncio>(this.url + mlId, this.httpOptions).pipe(
       catchError(this.handleError)
     );
   }
   
-  getProdutoByMlIdSearch(mlId: String): Observable<Produto>{
-    return this.http.get<Produto>(this.url + mlId + "/search", this.httpOptions).pipe(
+  getAnuncioByMlIdSearch(mlId: String): Observable<Anuncio>{
+    return this.http.get<Anuncio>(this.url + mlId + "/search", this.httpOptions).pipe(
       catchError(this.handleError)
     );
   }
 
-  createProdutoSearch(produto: ProdutoSimple): Observable<Produto>{
-    return this.http.post<Produto>(this.url + "simple", produto).pipe(catchError(this.handleError));
+  createAnuncioSearch(anuncio: AnuncioSimple): Observable<Anuncio>{
+    return this.http.post<Anuncio>(this.url + "simple", Anuncio).pipe(catchError(this.handleError));
   }
 
-  updateProdutoSimple(produto: ProdutoSimple): Observable<Produto>{
-    return this.http.put<Produto>(this.url + "simple", produto).pipe(catchError(this.handleError));
+  updateAnuncioSimple(anuncio: AnuncioSimple): Observable<Anuncio>{
+    return this.http.put<Anuncio>(this.url + "simple", anuncio).pipe(catchError(this.handleError));
   }
 
-  deleteProdutoById(id: number): Observable<null>{
+  deleteAnuncioById(id: number): Observable<null>{
     return this.http.delete<null>(this.url + id ).pipe(catchError(this.handleError));
   }
 
-  updateProdutoSearchByMlId(mlId: string): Observable<Produto>{
-    return this.http.put<Produto>(this.url + "/simple/" + mlId, {}).pipe(catchError(this.handleError));
+  updateAnuncioSearchByMlId(mlId: string): Observable<Anuncio>{
+    return this.http.put<Anuncio>(this.url + "/simple/" + mlId, {}).pipe(catchError(this.handleError));
   }
 
 }
