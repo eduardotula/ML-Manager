@@ -1,43 +1,48 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, of, startWith, map, forkJoin, Subject } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { MlServiceService } from 'src/app/services/ml-service.service';
 import { Anuncio } from 'src/app/services/models/Anuncio';
 import * as ExcelJS from 'exceljs';
 import { Router } from '@angular/router';
-import { DefaultTableMethods } from 'src/app/default-components/default-table/default-table';
+import { MatSort } from '@angular/material/sort';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-list-anuncios',
   templateUrl: "./list-anuncios.component.html",
   styleUrls: ['./list-anuncios.component.scss'],
 })
-export class ListAnunciosComponent extends DefaultTableMethods<Anuncio>{
+export class ListAnunciosComponent{
 
+  @ViewChild("tables") table!: MatTable<Anuncio>;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  dataSource = new MatTableDataSource<Anuncio>([]);
   loading = true;
-  filter = new FormControl('', { nonNullable: true });
   errorMsg: string = "";
-  orderColumn = 'id';
-  orderDirection = 'asc';
+  displayedColumns: string[] = ['id', 'mlId', "sku", "gtin", "descricao", "custo", "venda", "taxaMl", "frete", "lucro", "edit", "update", "delete"];
+
 
   constructor(public service: MlServiceService, public router: Router) {
-    super();
     this.errorMsg = ""
    }
 
-  ngOnInit(): void {
+   ngAfterViewInit(): void {
+    this.dataSource.sort = this.sort;
     this.service.listAll().subscribe({
       next: (prods) => {
-        this.items = prods;
-        this.items.forEach((item) => item.searchField = item.descricao);
-        this.itemsTemp = of(prods);
-        this.itemsTemp = this.filter.valueChanges.pipe(
-          startWith(''), map((text) => this.search(text)),
-        );
+        this.dataSource.data = prods;
+        this.table.renderRows();
         this.loading = false;
       }, error: (error) => this.errorMsg = error.message
     });
     
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   openAnuncioPage(url: string) {
@@ -52,14 +57,6 @@ export class ListAnunciosComponent extends DefaultTableMethods<Anuncio>{
         csosn: anuncio.csosn
       }
     });
-  }
-  sort(column: string): void {
-    if (this.orderColumn === column) {
-      this.orderDirection = this.orderDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.orderColumn = column;
-      this.orderDirection = 'asc';
-    }
   }
 
   clickDelete(anuncio: Anuncio) {
@@ -123,12 +120,12 @@ export class ListAnunciosComponent extends DefaultTableMethods<Anuncio>{
     ];
     
     var data: any = []
-    this.itemsTemp.subscribe(prods => prods.forEach(prod =>{
+    this.dataSource.filteredData.forEach(prod =>{
       let line = [
         prod.mlId, prod.sku, prod.gtin, prod.url, prod.descricao, prod.categoria, prod.custo, prod.precoDesconto, prod.taxaML, prod.custoFrete, prod.lucro,prod.status
       ]
       data.push(line);
-    }))
+    });
     
     worksheet.addTable({
       name: "Anuncios",

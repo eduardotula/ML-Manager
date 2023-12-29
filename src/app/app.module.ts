@@ -12,6 +12,9 @@ import { ListVendasComponent } from './venda/list-vendas/list-vendas.component';
 import { ListAnunciosComponent } from './anuncios/list-produtos/list-anuncios.component';
 import { TableFilterPropertyPipe } from './pipes/table-filter-property.pipe';
 import { TableSortPipe } from './pipes/table-sort.pipe';
+import { MatTableModule} from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 
@@ -22,12 +25,12 @@ import { TableSortPipe } from './pipes/table-sort.pipe';
         CadastrarAnuncioComponent,
         ListVendasComponent,
         TableFilterPropertyPipe,
-        TableSortPipe
+        TableSortPipe,
+        
     ],
     providers: [MlServiceService],
     bootstrap: [AppComponent],
     imports: [
-        
         BrowserModule,
         AppRoutingModule,
         NgbModule,
@@ -40,6 +43,9 @@ import { TableSortPipe } from './pipes/table-sort.pipe';
             backdropBorderRadius: '4px',
             primaryColour: '#8a2be2'
           }),
+        MatTableModule,
+        MatSortModule,
+        BrowserAnimationsModule
     ]
 })
 export class AppModule { }

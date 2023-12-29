@@ -2,3 +2,6 @@
 
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
+
+td.mat-mdc-cell{ border-color: var(--#{$prefix}border-color); }
+th.mat-mdc-header-cell{ border-color: var(--#{$prefix}border-color);}
