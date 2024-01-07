@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { forkJoin } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { MlServiceService } from 'src/app/services/ml-service.service';
 import { Anuncio } from 'src/app/services/models/Anuncio';
 import * as ExcelJS from 'exceljs';
@@ -19,9 +19,9 @@ export class ListAnunciosComponent{
   @ViewChild(MatSort) sort!: MatSort;
 
   dataSource = new MatTableDataSource<Anuncio>([]);
-  loading = true;
+  loading: boolean = true;
   errorMsg: string = "";
-  displayedColumns: string[] = ['id', 'mlId', "sku", "gtin", "descricao", "custo", "venda", "taxaMl", "frete", "lucro", "edit", "update", "delete"];
+  displayedColumns: string[] = ['id', 'mlId', "sku", "gtin", "descricao", "custo", "venda", "taxaMl", "frete", "lucro","status", "edit", "update", "delete"];
 
 
   constructor(public service: MlServiceService, public router: Router) {
@@ -76,29 +76,36 @@ export class ListAnunciosComponent{
 
   clickUpdateAll() {
     this.errorMsg = "";
-    this.service.listAll().subscribe({
-      next: (anunciosRegistrados) => {
-        const requests = anunciosRegistrados.map(prod => {
-          return this.service.updateAnuncioSearchByMlId(prod.mlId);
-        });
-        this.loading = true;
+    this.loading = true;
 
-        forkJoin(requests).subscribe(
-          (results) => {
-            window.location.reload();
-          },
-          (error) => {
-            console.error('Error updating Anuncios:', error);
-            this.errorMsg = 'Erro ao atualizar Anuncios';
-            this.loading = false;
-          }
-        );
-      },
-      error: (listError) => {
-        console.error('Error fetching product list:', listError);
-        this.errorMsg = 'Erro ao obter lista de Anuncios';
-      }
+    const requests: Observable<Anuncio>[] = [];
+    this.dataSource.filteredData.forEach((anunciosRegistrado)=>{
+      requests.push(this.service.updateAnuncioSearchByMlId(anunciosRegistrado.mlId))
     });
+
+    forkJoin(requests).subscribe(
+      (results) => {
+        window.location.reload();
+      },
+      (error) => {
+        console.error('Error updating Anuncios:', error);
+        this.errorMsg = 'Erro ao atualizar Anuncios';
+        this.loading = false;
+      }
+    );
+    // this.service.listAll().subscribe({
+    //   next: (anunciosRegistrados) => {
+    //     const requests = anunciosRegistrados.map(prod => {
+    //       return this.service.updateAnuncioSearchByMlId(prod.mlId);
+    //     });
+    //     this.loading = true;
+
+    //   },
+    //   error: (listError) => {
+    //     console.error('Error fetching product list:', listError);
+    //     this.errorMsg = 'Erro ao obter lista de Anuncios';
+    //   }
+    // });
   }
 
   exportToExcel(){

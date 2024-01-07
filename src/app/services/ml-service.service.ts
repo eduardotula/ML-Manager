@@ -46,7 +46,7 @@ export class MlServiceService extends CommonService{
   }
 
   createAnuncioSearch(anuncio: AnuncioSimple): Observable<Anuncio>{
-    return this.http.post<Anuncio>(this.url + "simple", Anuncio).pipe(catchError(this.handleError));
+    return this.http.post<Anuncio>(this.url + "simple", anuncio).pipe(catchError(this.handleError));
   }
 
   updateAnuncioSimple(anuncio: AnuncioSimple): Observable<Anuncio>{
