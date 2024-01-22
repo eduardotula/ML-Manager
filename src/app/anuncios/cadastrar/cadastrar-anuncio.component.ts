@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MlServiceService } from 'src/app/services/ml-service.service';
+import { MlServiceService } from 'src/app/services/anuncios.service';
+import { LocalStorageService } from 'src/app/services/local-storage/local-storage.service';
+import { UserLSService } from 'src/app/services/local-storage/user-ls.service';
 import { AnuncioSimple } from 'src/app/services/models/AnuncioSimple';
 
 @Component({
@@ -18,7 +20,9 @@ export class CadastrarAnuncioComponent implements OnInit {
   isCreate: boolean = true;
   errorMsg: string = "";
 
-  constructor(private formBuilder: FormBuilder, public service: MlServiceService, public route: ActivatedRoute, public router: Router) {
+  constructor(private formBuilder: FormBuilder, public service: MlServiceService, public lsUser: UserLSService,
+    public route: ActivatedRoute, public router: Router) {
+
     this.route.queryParams.subscribe(params =>{
       this.productForm = this.formBuilder.group({
         mlId: [params['mlId'], Validators.required],
@@ -37,7 +41,7 @@ export class CadastrarAnuncioComponent implements OnInit {
   ngOnInit() {
     this.resetPageState();
     this.loading = true;
-    this.service.listAllActiveMlMinusRegistered().subscribe({
+    this.service.listAllActiveMlMinusRegistered(this.lsUser.getCurrentUser()).subscribe({
       next: (ids) => {
         this.mlIds = ids;
         this.loading = false;
@@ -85,7 +89,7 @@ export class CadastrarAnuncioComponent implements OnInit {
       var anuncioSimple = new AnuncioSimple(this.productForm.value["mlId"], this.productForm.value["csosn"], this.productForm.value["custo"]);
       this.loading = true;
       if(this.isCreate){
-        this.service.createAnuncioSearch(anuncioSimple).subscribe({
+        this.service.createAnuncioSearch(anuncioSimple, this.lsUser.getCurrentUser()).subscribe({
           next: () => window.location.reload(),
           error: (error) => {
             this.errorMsg = error.message;
@@ -93,7 +97,7 @@ export class CadastrarAnuncioComponent implements OnInit {
           }
           });
       }else{
-        this.service.updateAnuncioSimple(anuncioSimple).subscribe({
+        this.service.updateAnuncioSimple(anuncioSimple, this.lsUser.getCurrentUser()).subscribe({
           next: () => this.router.navigate([""]),
           error: (error) => {
             this.errorMsg = error.message;
@@ -109,7 +113,7 @@ export class CadastrarAnuncioComponent implements OnInit {
 
   onTableClick(mlId: string){
     this.loading = true;
-    this.service.getAnuncioByMlIdSearch(mlId).subscribe({next: (prod) => {
+    this.service.getAnuncioByMlIdSearch(mlId, this.lsUser.getCurrentUser()).subscribe({next: (prod) => {
       this.productForm.patchValue({
         descricao: prod.descricao,
         sku: prod.sku

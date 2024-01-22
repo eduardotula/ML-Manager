@@ -13,9 +13,23 @@
         <li class="list-inline-item fs-5 list-item">
           <a class="list-item" routerLink="/list-vendas">Vendas</a>
         </li>
-
       </ul>
+      <ul>
+        <li class="list-inline-item fs-5">
+          <label class="form-label" style="color: white; font-size: 17px;">Selecione Usuário</label>
+        </li>
+        <li class="list-inline-item fs-5 list-item">
+          <div>
+            <select class="form-select"  name="user">
+              <option *ngFor="let user of users" [value]="user.name">{{user.name}}</option>
+            </select>
+          </div>
+        </li>
+      </ul>
+
+
+
   </div>
 </header>
 
-  <router-outlet></router-outlet>
+<router-outlet *ngIf="selectedUser"></router-outlet>

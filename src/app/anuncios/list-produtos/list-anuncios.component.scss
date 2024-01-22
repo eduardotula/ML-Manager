@@ -9,6 +9,8 @@
 }
 
 .limit-content {
-  height: 90vh;
-  overflow-y: scroll;
+  height: calc(90vh - 24px);
+  overflow-x: scroll;
   }
+
+

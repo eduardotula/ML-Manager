@@ -26,14 +26,6 @@ export abstract class CommonService {
     return throwError({status:status, message:msg, error:error.error});
   }
 
-  // Http Options
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-      "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, PATCH, DELETE",
-      'Access-Control-Allow-Headers': 'Content-Type, Accept',
-    }),
-  };
+
 
 }

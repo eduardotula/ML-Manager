@@ -1,12 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, forkJoin } from 'rxjs';
-import { MlServiceService } from 'src/app/services/ml-service.service';
+import { MlServiceService } from 'src/app/services/anuncios.service';
 import { Anuncio } from 'src/app/services/models/Anuncio';
 import * as ExcelJS from 'exceljs';
 import { Router } from '@angular/router';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { UserLSService } from 'src/app/services/local-storage/user-ls.service';
 
 @Component({
   selector: 'app-list-anuncios',
@@ -23,14 +24,13 @@ export class ListAnunciosComponent{
   errorMsg: string = "";
   displayedColumns: string[] = ['id', 'mlId', "sku", "gtin", "descricao", "custo", "venda", "taxaMl", "frete", "lucro","status", "edit", "update", "delete"];
 
-
-  constructor(public service: MlServiceService, public router: Router) {
+  constructor(public service: MlServiceService,public lsUser: UserLSService, public router: Router) {
     this.errorMsg = ""
    }
 
    ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
-    this.service.listAll().subscribe({
+    this.service.listAll(this.lsUser.getCurrentUser()).subscribe({
       next: (prods) => {
         this.dataSource.data = prods;
         this.table.renderRows();
@@ -60,7 +60,7 @@ export class ListAnunciosComponent{
   }
 
   clickDelete(anuncio: Anuncio) {
-    this.service.deleteAnuncioById(anuncio.id).subscribe({
+    this.service.deleteById(anuncio.id).subscribe({
       next: () => window.location.reload(),
       error: (err) => this.errorMsg = err.message
 
@@ -68,7 +68,7 @@ export class ListAnunciosComponent{
   }
 
   clickUpdate(anuncio: Anuncio) {
-    this.service.updateAnuncioSearchByMlId(anuncio.mlId).subscribe({
+    this.service.updateAnuncioSearchByMlId(anuncio.mlId, this.lsUser.getCurrentUser()).subscribe({
       next: () => window.location.reload(),
       error: (err) => this.errorMsg = err.message
     });
@@ -80,7 +80,7 @@ export class ListAnunciosComponent{
 
     const requests: Observable<Anuncio>[] = [];
     this.dataSource.filteredData.forEach((anunciosRegistrado)=>{
-      requests.push(this.service.updateAnuncioSearchByMlId(anunciosRegistrado.mlId))
+      requests.push(this.service.updateAnuncioSearchByMlId(anunciosRegistrado.mlId, this.lsUser.getCurrentUser()))
     });
 
     forkJoin(requests).subscribe(
