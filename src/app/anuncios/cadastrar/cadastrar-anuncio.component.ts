@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { error } from 'jquery';
 import { MlServiceService } from 'src/app/services/anuncios.service';
 import { LocalStorageService } from 'src/app/services/local-storage/local-storage.service';
 import { UserLSService } from 'src/app/services/local-storage/user-ls.service';
@@ -88,23 +89,22 @@ export class CadastrarAnuncioComponent implements OnInit {
     if (this.productForm.valid) {
       var anuncioSimple = new AnuncioSimple(this.productForm.value["mlId"], this.productForm.value["csosn"], this.productForm.value["custo"]);
       this.loading = true;
-      if(this.isCreate){
-        this.service.createAnuncioSearch(anuncioSimple, this.lsUser.getCurrentUser()).subscribe({
-          next: () => window.location.reload(),
-          error: (error) => {
-            this.errorMsg = error.message;
-            this.loading = false;
-          }
-          });
-      }else{
-        this.service.updateAnuncioSimple(anuncioSimple, this.lsUser.getCurrentUser()).subscribe({
-          next: () => this.router.navigate([""]),
-          error: (error) => {
-            this.errorMsg = error.message;
-            this.loading = false;
-          }
-          });
-      }
+
+      this.service.getAnuncioByMlId(anuncioSimple.mlId, this.lsUser.getCurrentUser()).subscribe({
+        next: (existAnuncio) => {
+
+          if(this.isCreate && !existAnuncio)  this.createAnuncio(anuncioSimple);
+            else this.updateAnuncio(anuncioSimple);
+          
+        },error: (error) =>{
+          this.errorMsg = error.message;
+          this.loading = false;
+        }
+      });
+
+
+
+
 
     } else {
       console.log('Form is invalid');
@@ -127,6 +127,26 @@ export class CadastrarAnuncioComponent implements OnInit {
     this.productForm.patchValue({
       mlId: mlId,
     })
+  }
+
+  createAnuncio(anuncioSimple: AnuncioSimple){
+    this.service.createAnuncioSearch(anuncioSimple, this.lsUser.getCurrentUser()).subscribe({
+      next: () => window.location.reload(),
+      error: (error) => {
+        this.errorMsg = error.message;
+        this.loading = false;
+      }
+      });
+  }
+
+  updateAnuncio(anuncioSimple: AnuncioSimple){
+    this.service.updateAnuncioSimple(anuncioSimple, this.lsUser.getCurrentUser()).subscribe({
+      next: () => this.router.navigate([""]),
+      error: (error) => {
+        this.errorMsg = error.message;
+        this.loading = false;
+      }
+      });
   }
 
   resetPageState(){

@@ -30,7 +30,7 @@ export class ListAnunciosComponent{
 
    ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
-    this.service.listAll(this.lsUser.getCurrentUser()).subscribe({
+    this.service.listAll(this.lsUser.getCurrentUser(), true).subscribe({
       next: (prods) => {
         this.dataSource.data = prods;
         this.table.renderRows();

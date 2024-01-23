@@ -14,6 +14,7 @@ import { TableFilterPropertyPipe } from './pipes/table-filter-property.pipe';
 import { TableSortPipe } from './pipes/table-sort.pipe';
 import { MatTableModule} from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
@@ -45,7 +46,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
           }),
         MatTableModule,
         MatSortModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        MatExpansionModule
     ]
 })
 export class AppModule { }

@@ -1,0 +1,28 @@
+<table #tables mat-table [dataSource]="dataSource" class="table caption-top table-striped table-hover" matSort>
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>#</th>
+          <td mat-cell *matCellDef="let order">{{ order.id }}</td>
+        </ng-container>
+
+        
+        <ng-container matColumnDef="aa">
+          <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header></th>
+          <td mat-cell *matCellDef="let order">
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                </mat-expansion-panel-header>
+                <p>This is the primary content of the panel.</p>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </td>
+        </ng-container>
+
+
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+

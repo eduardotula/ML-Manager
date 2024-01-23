@@ -33,9 +33,10 @@ export class MlServiceService extends CommonService{
     return this.http.get<string[]>(this.url + "list-all-active-minus-registered", {params:params}).pipe(catchError(this.handleError));
   }
 
-  listAll(userId: number): Observable<Anuncio[]>{
+  listAll(userId: number, registered: boolean): Observable<Anuncio[]>{
     var params = {
       "user-id": userId,
+      "registered": registered
     };
     return this.http.get<Anuncio[]>(this.url, {params:params}).pipe(
       catchError(this.handleError)
@@ -55,7 +56,7 @@ export class MlServiceService extends CommonService{
     var params = {
       "user-id": userId,
     };
-    return this.http.get<Anuncio>(this.url + mlId + `/mlId/${mlId}/ml-api`, {params:params}).pipe(
+    return this.http.get<Anuncio>(this.url +`/mlId/${mlId}/ml-api`, {params:params}).pipe(
       catchError(this.handleError)
     );
   }
@@ -64,14 +65,14 @@ export class MlServiceService extends CommonService{
     var params = {
       "user-id": userId,
     };
-    return this.http.post<Anuncio>(this.url + "simple", anuncio).pipe(catchError(this.handleError));
+    return this.http.post<Anuncio>(this.url + "simple", anuncio, {params}).pipe(catchError(this.handleError));
   }
 
   updateAnuncioSimple(anuncio: AnuncioSimple, userId:number): Observable<Anuncio>{
     var params = {
       "user-id": userId,
     };
-    return this.http.put<Anuncio>(this.url + "simple", anuncio).pipe(catchError(this.handleError));
+    return this.http.put<Anuncio>(this.url + "simple", anuncio, {params}).pipe(catchError(this.handleError));
   }
 
   deleteById(id: number): Observable<null>{
@@ -80,9 +81,9 @@ export class MlServiceService extends CommonService{
 
   updateAnuncioSearchByMlId(mlId: string, userId:number): Observable<Anuncio>{
     var params = {
-      "user-id": userId
+      "user-id": userId,
     };
-    return this.http.put<Anuncio>(this.url + `${mlId}/search`, {}).pipe(catchError(this.handleError));
+    return this.http.put<Anuncio>(this.url + `${mlId}/search`, {params}).pipe(catchError(this.handleError));
   }
 
 }
