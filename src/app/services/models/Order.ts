@@ -1,12 +1,12 @@
 import { Venda } from './Venda'; // Assuming Venda is another class or interface
 
 class Order {
-    private id: number;
-    private orderId: number;
-    private packId: number;
-    private vendas: Venda[];
-    private orderCreationTime: Date;
-    private createdAt: Date;
+    public id: number;
+    public orderId: number;
+    public packId: number;
+    public vendas: Venda[];
+    public orderCreationTime: Date;
+    public createdAt: Date;
 
     constructor(
         id: number,

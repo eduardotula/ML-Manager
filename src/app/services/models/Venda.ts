@@ -1,17 +1,19 @@
 import { Anuncio } from "./Anuncio";
+import { AnuncioVenda } from "./AnuncioVenda";
 
 class Venda {
-    private id: number;
-    private quantidade: number;
-    private precoDesconto: number;
-    private taxaML: number;
-    private custoFrete: number;
-    private custo: number;
-    private lucro: number;
-    private completo: boolean;
-    private status: string;
-    private orderId: number;
-    private createdAt: Date;
+    public id: number;
+    public quantidade: number;
+    public precoDesconto: number;
+    public taxaML: number;
+    public custoFrete: number;
+    public custo: number;
+    public lucro: number;
+    public completo: boolean;
+    public status: string;
+    public orderId: number;
+    public anuncio: AnuncioVenda;
+    public createdAt: Date;
 
     constructor(
         id: number,
@@ -23,6 +25,7 @@ class Venda {
         lucro: number,
         completo: boolean,
         status: string,
+        anuncio: AnuncioVenda,
         orderId: number,
         createdAt: Date
     ) {
@@ -36,6 +39,7 @@ class Venda {
         this.completo = completo;
         this.status = status;
         this.orderId = orderId;
+        this.anuncio = anuncio,
         this.createdAt = createdAt;
     }
 }

@@ -1,28 +1,73 @@
-<table #tables mat-table [dataSource]="dataSource" class="table caption-top table-striped table-hover" matSort>
-
-        <ng-container matColumnDef="id">
-          <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>#</th>
-          <td mat-cell *matCellDef="let order">{{ order.id }}</td>
-        </ng-container>
-
-        
-        <ng-container matColumnDef="aa">
-          <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header></th>
-          <td mat-cell *matCellDef="let order">
-            <mat-accordion>
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                </mat-expansion-panel-header>
-                <p>This is the primary content of the panel.</p>
-              </mat-expansion-panel>
-            </mat-accordion>
-          </td>
-        </ng-container>
 
 
+<div class="container-xxl card" style="margin-top: 10px;">
+  <table #tables mat-table [dataSource]="dataSource" class="table caption-top table-hover" matSort>
+
+    <div matColumnDef="alert" class="alert-icon-column">
+      <th mat-header-cell scope="col" class="alert-icon-column" *matHeaderCellDef mat-sort-header></th>
+      <td mat-cell *matCellDef="let order " class="alert-icon-column">
+        <img *ngIf="checkIfOrderContainsIncompleteAnuncio(order)" title="Possui produtos com cadastro incompletos"
+         class="hover-icon"  src="../../../assets/warning.png" width="16" height="16">
+      </td>
+    </div>
+  
+    <mat-expansion-panel matColumnDef="vendasDescriptions">
+      <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Ordem</th>
+      <td mat-cell *matCellDef="let order">
+        <div class="card">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Ordem de {{sumItemsInOrder(order)}} produtos
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item" style="background-color: rgb(243, 243, 243); border-radius: 5px;">
+                <div class="row text-center" *ngFor="let venda of order.vendas">
+                  
+                  <div class="col-6">
+                    {{venda.anuncio.descricao}}
+                  </div>
+                  <div class="col-sm">
+                    {{venda.quantidade}} unidade
+                  </div>
+
+                  <div class="col-sm">
+                    {{venda.precoDesconto| currency:"BRL"}} 
+                  </div>
+
+                  <div class="col-sm" *ngIf="!venda.anuncio.registered">
+                    <button type="button" class="btn btn-primary" (click)="clickEdit(venda.anuncio)" >Editar</button>
+                  </div>
 
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+                </div>
+              </li>
+            </ul>
+
+  
+  
+          </mat-expansion-panel>
+        </div>
+      </td>
+    </mat-expansion-panel>
+  
+    <div matColumnDef="custoTotal">
+      <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Lucro Total</th>
+      <td mat-cell *matCellDef="let order">{{ sumCustoInOrder(order) | currency:"BRL" }}</td>
+    </div>
+  
+
+    <div matColumnDef="lucroTotal">
+      <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Lucro Total</th>
+      <td mat-cell *matCellDef="let order">{{ sumLucroInOrder(order) | currency:"BRL" }}</td>
+    </div>
+  
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  
+</div>
+
 

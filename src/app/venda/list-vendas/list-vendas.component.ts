@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { UserLSService } from 'src/app/services/local-storage/user-ls.service';
+import { AnuncioVenda } from 'src/app/services/models/AnuncioVenda';
 import { Order } from 'src/app/services/models/Order';
 import { OrderService } from 'src/app/services/order.service';
 
@@ -14,12 +16,12 @@ export class ListVendasComponent {
 
     @ViewChild("tables") table!: MatTable<Order>;
     @ViewChild(MatSort) sort!: MatSort;
-    displayedColumns: string[] = ['id', "aa"];
+    displayedColumns: string[] = ['alert', 'vendasDescriptions', "custoTotal","lucroTotal"];
 
     panelOpenState = false;
     dataSource = new MatTableDataSource<Order>([]);
 
-    constructor(public orderService: OrderService, public lsUser: UserLSService) {
+    constructor(public orderService: OrderService, public lsUser: UserLSService, public router: Router) {
     }
 
     ngAfterViewInit(): void {
@@ -31,4 +33,36 @@ export class ListVendasComponent {
             }
         })
      }
+
+     sumItemsInOrder(order: Order): number{
+        return order.vendas.length;
+     }
+
+     sumLucroInOrder(order: Order): number{
+        var lucroTotal = 0;
+        order.vendas.forEach((venda) => lucroTotal += venda.lucro)
+        return lucroTotal;
+     }
+
+     sumCustoInOrder(order: Order): number{
+        var lucroTotal = 0;
+        order.vendas.forEach((venda) => lucroTotal += venda.custo)
+        return lucroTotal;
+     }
+
+     checkIfOrderContainsIncompleteAnuncio(order: Order): boolean{
+        var vendas = order.vendas.filter((venda) => !venda.anuncio.registered);
+        if(vendas.length > 0)
+            return true;
+
+        return false; 
+     }
+
+     clickEdit(anuncio: AnuncioVenda) {
+        this.router.navigate(["/cadastrar-anuncio"], {
+          queryParams: {
+            mlId: anuncio.mlId,
+          }
+        });
+      }
 }
