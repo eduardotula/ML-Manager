@@ -17,6 +17,7 @@ export class Anuncio implements Searchable{
     public createdAt: Date;
     public lucro: number;
     public searchField: string = "";
+    public complete: boolean;
 
     // Constructor
     constructor(
@@ -34,7 +35,8 @@ export class Anuncio implements Searchable{
         custoFrete: number,
         status: string,
         createdAt: Date,
-        lucro: number
+        lucro: number,
+        complete: boolean
     ) {
         this.id = id;
         this.mlId = mlId;
@@ -51,6 +53,7 @@ export class Anuncio implements Searchable{
         this.status = status;
         this.createdAt = createdAt;
         this.lucro = lucro;
+        this.complete = complete;
         //Utilizado para busca
         this.searchField = descricao;
     }

@@ -42,7 +42,7 @@ export class CadastrarAnuncioComponent implements OnInit {
   ngOnInit() {
     this.resetPageState();
     this.loading = true;
-    this.service.listAllActiveMlMinusRegistered(this.lsUser.getCurrentUser()).subscribe({
+    this.service.listAllActiveMlMinuscomplete(this.lsUser.getCurrentUser()).subscribe({
       next: (ids) => {
         this.mlIds = ids;
         this.loading = false;
@@ -90,7 +90,7 @@ export class CadastrarAnuncioComponent implements OnInit {
       var anuncioSimple = new AnuncioSimple(this.productForm.value["mlId"], this.productForm.value["csosn"], this.productForm.value["custo"]);
       this.loading = true;
 
-      this.service.getAnuncioByMlId(anuncioSimple.mlId, this.lsUser.getCurrentUser()).subscribe({
+      this.service.getAnuncioByMlId(anuncioSimple.mlId, this.lsUser.getCurrentUser(), false).subscribe({
         next: (existAnuncio) => {
 
           if(this.isCreate && !existAnuncio)  this.createAnuncio(anuncioSimple);
@@ -103,9 +103,6 @@ export class CadastrarAnuncioComponent implements OnInit {
       });
 
 
-
-
-
     } else {
       console.log('Form is invalid');
     }
@@ -116,7 +113,8 @@ export class CadastrarAnuncioComponent implements OnInit {
     this.service.getAnuncioByMlIdSearch(mlId, this.lsUser.getCurrentUser()).subscribe({next: (prod) => {
       this.productForm.patchValue({
         descricao: prod.descricao,
-        sku: prod.sku
+        sku: prod.sku,
+        mlId: prod.mlId
       })
       this.resetPageState();
     }, error: (erro) => {

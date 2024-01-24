@@ -51,7 +51,7 @@ export class ListVendasComponent {
      }
 
      checkIfOrderContainsIncompleteAnuncio(order: Order): boolean{
-        var vendas = order.vendas.filter((venda) => !venda.anuncio.registered);
+        var vendas = order.vendas.filter((venda) => !venda.anuncio.complete);
         if(vendas.length > 0)
             return true;
 
