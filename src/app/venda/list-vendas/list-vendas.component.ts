@@ -22,7 +22,9 @@ export class ListVendasComponent {
     'lucroTotal',
   ];
 
-  vendaImgs = [{}]
+  vendaImgs = [{
+    
+  }]
 
   panelOpenState = false;
   dataSource = new MatTableDataSource<Order>([]);
