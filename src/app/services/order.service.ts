@@ -12,9 +12,7 @@ import { PaginationResponse } from "./models/PaginationResponse";
 
     url: string = 'http://localhost:8080/orders/'
 
-    constructor(private http: HttpClient){
-        super();
-    }
+
 
     listByFilters(page: number, userId: number, sortType: string): Observable<PaginationResponse<Order>>{
       var params = {

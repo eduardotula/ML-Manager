@@ -11,11 +11,6 @@ import { HttpClient } from "@angular/common/http";
 
     url: string = 'http://localhost:8080/users/'
     
-    constructor(
-        private http: HttpClient
-      ) {
-        super();
-      }
 
     getAll(): Observable<User[]>{
         return this.http.get<User[]>(this.url).pipe(catchError(this.handleError));

@@ -13,11 +13,6 @@ export class MlServiceService extends CommonService{
 
   url: string = 'http://localhost:8080/anuncios/'
 
-  constructor(
-    private http: HttpClient
-  ) {
-    super();
-  }
 
   listAllActivesAnunciosIds(userId: number): Observable<string[]>{
     var params = {

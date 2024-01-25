@@ -1,11 +1,14 @@
-import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export abstract class CommonService {
+
+  constructor(public http: HttpClient){
+}
 
   handleError(error: HttpErrorResponse) {
     let status!: number;
@@ -26,6 +29,9 @@ export abstract class CommonService {
     return throwError({status:status, message:msg, error:error.error});
   }
 
-
+  getImage(url: string): Observable<Blob> {
+    // Set the response type to 'blob' to handle binary data (like images)
+    return this.http.get(url, { responseType: 'blob' });
+  }
 
 }
