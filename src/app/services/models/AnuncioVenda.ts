@@ -5,15 +5,13 @@ export class AnuncioVenda{
     public descricao: string;
     public complete: boolean;
     public fotoCapa: string;
-    public fotoCapaImg: any;
 
-    constructor(id: number, mlId: string, descricao: string, complete: boolean, fotoCapa: string, fotoCapaImg: any){
+    constructor(id: number, mlId: string, descricao: string, complete: boolean, fotoCapa: string){
         this.id = id;
         this.mlId = mlId;
         this.descricao = descricao;
         this.complete = complete;
         this.fotoCapa = fotoCapa;
-        this.fotoCapaImg = fotoCapaImg;
     }
     
 }

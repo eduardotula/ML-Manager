@@ -26,7 +26,7 @@
                 <div class="row text-center" *ngFor="let venda of order.vendas">
                   
                   <div class="col-6">
-                    <img [src]="this.imageToShow" alt="Image">
+                    <img [src]="getImageForVenda(venda)" alt="Image">
                   </div>
                   
                   <div class="col-6">

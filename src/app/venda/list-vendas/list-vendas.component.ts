@@ -2,9 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { Observable, forkJoin } from 'rxjs';
 import { UserLSService } from 'src/app/services/local-storage/user-ls.service';
 import { AnuncioVenda } from 'src/app/services/models/AnuncioVenda';
 import { Order } from 'src/app/services/models/Order';
+import { Venda } from 'src/app/services/models/Venda';
 import { OrderService } from 'src/app/services/order.service';
 
 @Component({
@@ -22,9 +24,7 @@ export class ListVendasComponent {
     'lucroTotal',
   ];
 
-  vendaImgs = [{
-    
-  }]
+  vendaImgsMap : Map<Venda, string> = new Map();
 
   panelOpenState = false;
   dataSource = new MatTableDataSource<Order>([]);
@@ -42,22 +42,21 @@ export class ListVendasComponent {
       .subscribe({
         next: (orders) => {
           this.dataSource.data = orders.results;
-          
-          orders.results.forEach(order => {
-            
-            order.vendas.forEach(venda =>{
-              
-            })
-          })
+
+          orders.results.forEach((order) => {
+            order.vendas.forEach((venda) => {
+              if(venda.anuncio.fotoCapa){
+                this.orderService.getImage(venda.anuncio.fotoCapa).subscribe({
+                  next: (imgBlob) =>{
+                    this.vendaImgsMap.set(venda, this.createImageFromBlob(imgBlob));
+                  }
+                });
+              }
+            });
+          });
         },
         error: (error) => {},
       });
-
-      this.orderService.getImage("http://http2.mlstatic.com/D_607023-MLB74068029316_012024-O.jpg").subscribe({
-        next: (img) =>{
-          this.createImageFromBlob(img);
-        }
-      })
   }
 
   sumItemsInOrder(order: Order): number {
@@ -91,14 +90,25 @@ export class ListVendasComponent {
     });
   }
 
-  createImageFromBlob(image: Blob) {
-    let reader = new FileReader();
-    reader.addEventListener("load", () => {
-       this.imageToShow = reader.result;
-    }, false);
- 
-    if (image) {
-       reader.readAsDataURL(image);
+  createImageFromBlob(image: Blob): string {
+    if (image.size > 0) {
+      return URL.createObjectURL(image);
     }
- }
+    return '';
+  }
+
+  getImageForVenda(venda: Venda): any{
+    return this.vendaImgsMap.get(venda);
+  }
+
+  //   createImageFromBlob(image: Blob) {
+  //     let reader = new FileReader();
+  //     reader.addEventListener("load", () => {
+  //        this.imageToShow = reader.result;
+  //     }, false);
+
+  //     if (image) {
+  //        reader.readAsDataURL(image);
+  //     }
+  //  }
 }
