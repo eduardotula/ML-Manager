@@ -28,7 +28,6 @@ export class ListVendasComponent {
 
   panelOpenState = false;
   dataSource = new MatTableDataSource<Order>([]);
-  imageToShow: any;
 
   constructor(
     public orderService: OrderService,
@@ -101,14 +100,7 @@ export class ListVendasComponent {
     return this.vendaImgsMap.get(venda);
   }
 
-  //   createImageFromBlob(image: Blob) {
-  //     let reader = new FileReader();
-  //     reader.addEventListener("load", () => {
-  //        this.imageToShow = reader.result;
-  //     }, false);
-
-  //     if (image) {
-  //        reader.readAsDataURL(image);
-  //     }
-  //  }
+  getThumbForOder(order: Order): any{
+    
+  }
 }
