@@ -22,7 +22,8 @@ export class ListAnunciosComponent{
   dataSource = new MatTableDataSource<Anuncio>([]);
   loading: boolean = true;
   errorMsg: string = "";
-  displayedColumns: string[] = ['id', 'mlId', "sku", "gtin", "descricao", "custo", "venda", "taxaMl", "frete", "lucro","status", "edit", "update", "delete"];
+  displayedColumns: string[] = ['id', 'mlId', "sku", "descricao", "custo", "venda", "taxaMl", "frete", "lucro","status", "edit", "update", "delete"];
+  anuncioImgsMap : Map<Anuncio, string> = new Map();
 
   constructor(public service: MlServiceService,public lsUser: UserLSService, public router: Router) {
     this.errorMsg = ""
@@ -35,6 +36,16 @@ export class ListAnunciosComponent{
         this.dataSource.data = prods;
         this.table.renderRows();
         this.loading = false;
+        
+        this.dataSource.data.forEach((anuncio) =>{
+          if(anuncio.pictures.length > 0){
+            this.service.getImage(anuncio.pictures[0].url).subscribe({
+              next: (imgBlob) =>{
+                this.anuncioImgsMap.set(anuncio, this.service.createImageFromBlob(imgBlob));
+              }
+            });
+          }
+        })
       }, error: (error) => this.errorMsg = error.message
     });
     
@@ -93,19 +104,6 @@ export class ListAnunciosComponent{
         this.loading = false;
       }
     );
-    // this.service.listAll().subscribe({
-    //   next: (anunciosRegistrados) => {
-    //     const requests = anunciosRegistrados.map(prod => {
-    //       return this.service.updateAnuncioSearchByMlId(prod.mlId);
-    //     });
-    //     this.loading = true;
-
-    //   },
-    //   error: (listError) => {
-    //     console.error('Error fetching product list:', listError);
-    //     this.errorMsg = 'Erro ao obter lista de Anuncios';
-    //   }
-    // });
   }
 
   exportToExcel(){
@@ -114,7 +112,7 @@ export class ListAnunciosComponent{
     var columns = [
       { name: 'mlId', width: 14 },
       { name: 'sku',  width: 20 },
-      { name: 'gtin',  width: 13 },
+     // { name: 'gtin',  width: 13 },
       { name: 'url', width: 10 },
       { name: 'Descrição', width: 60 },
       { name: 'Categoria',  width: 12 },
@@ -151,5 +149,9 @@ export class ListAnunciosComponent{
       a.download = 'example.xlsx';
       a.click();
     });
+  }
+
+  getImageForAnuncio(anuncio: Anuncio): any{
+    return this.anuncioImgsMap.get(anuncio);
   }
 }

@@ -47,7 +47,7 @@ export class ListVendasComponent {
               if(venda.anuncio.fotoCapa){
                 this.orderService.getImage(venda.anuncio.fotoCapa).subscribe({
                   next: (imgBlob) =>{
-                    this.vendaImgsMap.set(venda, this.createImageFromBlob(imgBlob));
+                    this.vendaImgsMap.set(venda, this.orderService.createImageFromBlob(imgBlob));
                   }
                 });
               }
@@ -89,12 +89,7 @@ export class ListVendasComponent {
     });
   }
 
-  createImageFromBlob(image: Blob): string {
-    if (image.size > 0) {
-      return URL.createObjectURL(image);
-    }
-    return '';
-  }
+
 
   getImageForVenda(venda: Venda): any{
     return this.vendaImgsMap.get(venda);

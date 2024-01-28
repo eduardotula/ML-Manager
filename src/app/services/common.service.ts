@@ -33,5 +33,12 @@ export abstract class CommonService {
     // Set the response type to 'blob' to handle binary data (like images)
     return this.http.get(url, { responseType: 'blob' });
   }
+  
+  createImageFromBlob(image: Blob): string {
+    if (image.size > 0) {
+      return URL.createObjectURL(image);
+    }
+    return '';
+  }
 
 }

@@ -12,7 +12,7 @@
   </div>
 </div>
 
-  <div class="container-fluid limit-content">
+  <div class="container-xxl limit-content">
     <div class="">
       <ngx-loading [show]="loading"></ngx-loading>
       
@@ -29,8 +29,12 @@
       <table #tables mat-table [dataSource]="dataSource" class="table caption-top table-striped table-hover" matSort>
 
         <ng-container matColumnDef="id">
-          <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>#</th>
-          <td mat-cell *matCellDef="let anuncio">{{ anuncio.id }}</td>
+          <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header></th>
+          <td mat-cell *matCellDef="let anuncio">
+            <div class="col">
+              <img [src]="getImageForAnuncio(anuncio)" alt="Image" style="height: 48px; width: 48px;">
+            </div>
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="mlId">
@@ -42,11 +46,11 @@
           <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header style="max-width: 150px;">sku</th>
           <td mat-cell *matCellDef="let anuncio" style="max-width: 150px;">{{ anuncio.sku }}</td>
         </ng-container>
-
+<!-- 
         <ng-container matColumnDef="gtin">
           <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>GTIN</th>
           <td mat-cell *matCellDef="let anuncio">{{ anuncio.gtin }}</td>
-        </ng-container>
+        </ng-container> -->
 
         <ng-container matColumnDef="descricao">
           <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Descrição</th>
