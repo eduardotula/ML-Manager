@@ -1,5 +1,6 @@
 import { Searchable } from "src/app/default-components/default-table/Searchable";
 import { Url } from "./Url";
+import { Venda } from "./Venda";
 
 export class Anuncio implements Searchable{
     public id: number;
@@ -20,6 +21,7 @@ export class Anuncio implements Searchable{
     public searchField: string = "";
     public complete: boolean;
     public pictures: Url[];
+    public vendas: Venda[];
 
     // Constructor
     constructor(
@@ -39,7 +41,8 @@ export class Anuncio implements Searchable{
         createdAt: Date,
         lucro: number,
         complete: boolean,
-        pictures: Url[]
+        pictures: Url[],
+        vendas: Venda[],
     ) {
         this.id = id;
         this.mlId = mlId;
@@ -58,6 +61,7 @@ export class Anuncio implements Searchable{
         this.lucro = lucro;
         this.complete = complete;
         this.pictures = pictures;
+        this.vendas = vendas;
         //Utilizado para busca
         this.searchField = descricao;
     }

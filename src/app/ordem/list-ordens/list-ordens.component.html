@@ -1,7 +1,15 @@
 
 
+
+<div class="container card" style="margin-top: 10px;">
+  <filter-date (dateSelected)="onSubmitDate($event)" ></filter-date>
+</div>
+
+<ngx-loading [show]="loading"></ngx-loading>
+
 <div class="container-xl card" style="margin-top: 10px;">
   <table #tables mat-table [dataSource]="dataSource" class="table caption-top table-hover align-middle" matSort>
+
 
     <div matColumnDef="alert" class="alert-icon-column ">
       <th mat-header-cell scope="col" class="alert-icon-column" *matHeaderCellDef mat-sort-header></th>

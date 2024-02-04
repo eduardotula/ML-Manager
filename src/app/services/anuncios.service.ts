@@ -61,14 +61,14 @@ export class MlServiceService extends CommonService{
     var params = {
       "user-id": userId,
     };
-    return this.http.post<Anuncio>(this.url + "simple", anuncio, {params}).pipe(catchError(this.handleError));
+    return this.http.post<Anuncio>(this.url , anuncio, {params}).pipe(catchError(this.handleError));
   }
 
   updateAnuncioSimple(anuncio: AnuncioSimple, userId:number): Observable<Anuncio>{
     var params = {
       "user-id": userId,
     };
-    return this.http.put<Anuncio>(this.url + "simple", anuncio, {params}).pipe(catchError(this.handleError));
+    return this.http.put<Anuncio>(this.url , anuncio, {params}).pipe(catchError(this.handleError));
   }
 
   deleteById(id: number): Observable<null>{

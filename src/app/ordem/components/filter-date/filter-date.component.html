@@ -1,0 +1,51 @@
+<div class="container">
+    <form [formGroup]="filterForm">
+        <div class="row margin">
+            <div class="col">
+                <input class="form-control" placeholder="Buscar Item">
+            </div>
+        </div>
+    
+        <div class="row margin">
+            <div class="col">
+                <div class="row">
+                    <div class="input-group form-group">
+                        <input class="form-control" placeholder="Dia/Mes/Ano" name="dp"  ngbDatepicker
+                            #d="ngbDatepicker" formControlName="dataInicial"  />
+                        <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+                            <img src="../../../assets/calendar-date.svg" width="16" height="16">
+                        </button>
+                    </div>
+                </div>
+                <div class="row alert alert-danger" *ngIf="getdataInicial?.invalid && (getdataInicial?.dirty || getdataInicial?.touched)">Campo obrigatorio</div>
+
+
+            </div>
+
+
+            <div class="col">
+                <div class="row">
+                    <div class="input-group form-group">
+                        <input class="form-control" placeholder="Dia/Mes/Ano" name="dp1"  ngbDatepicker
+                            #d1="ngbDatepicker" formControlName="dataFinal" />
+                        <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
+                            <img src="../../../assets/calendar-date.svg" width="16" height="16">
+                        </button>
+                    </div>
+                </div>
+                <div class="row alert alert-danger" *ngIf="getdataFinal?.invalid && (getdataFinal?.dirty || getdataFinal?.touched)">Campo obrigatorio</div>
+            </div>
+
+        </div>
+    
+        <div class="row button-margin">
+            <div class="col  d-flex justify-content-end">
+                <button type="button" class="btn btn-primary" (click)="submit()">Confirmar</button>
+            </div>
+        </div>
+    
+
+    </form>
+
+</div>
+

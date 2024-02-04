@@ -1,13 +1,14 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
+import { DateToStringPipe } from '../pipes/dateToString';
 
 @Injectable({
   providedIn: 'root'
 })
 export abstract class CommonService {
 
-  constructor(public http: HttpClient){
+  constructor(public http: HttpClient, public dateToString: DateToStringPipe){
 }
 
   handleError(error: HttpErrorResponse) {
@@ -27,18 +28,6 @@ export abstract class CommonService {
     }
     // return an observable with a person-facing error message
     return throwError({status:status, message:msg, error:error.error});
-  }
-
-  getImage(url: string): Observable<Blob> {
-    // Set the response type to 'blob' to handle binary data (like images)
-    return this.http.get(url, { responseType: 'blob' });
-  }
-  
-  createImageFromBlob(image: Blob): string {
-    if (image.size > 0) {
-      return URL.createObjectURL(image);
-    }
-    return '';
   }
 
 }

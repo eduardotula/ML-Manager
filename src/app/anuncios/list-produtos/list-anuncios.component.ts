@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { UserLSService } from 'src/app/services/local-storage/user-ls.service';
+import { ImageMLService } from 'src/app/services/image-ml.service';
+import { ImageModel } from 'src/app/default-components/default-table/image-model';
 
 @Component({
   selector: 'app-list-anuncios',
@@ -23,9 +25,9 @@ export class ListAnunciosComponent{
   loading: boolean = true;
   errorMsg: string = "";
   displayedColumns: string[] = ['id', 'mlId', "sku", "descricao", "custo", "venda", "taxaMl", "frete", "lucro","status", "edit", "update", "delete"];
-  anuncioImgsMap : Map<Anuncio, string> = new Map();
+  anuncioImages: ImageModel<Anuncio> = new ImageModel();
 
-  constructor(public service: MlServiceService,public lsUser: UserLSService, public router: Router) {
+  constructor(public service: MlServiceService,public lsUser: UserLSService, public router: Router, private imgService: ImageMLService) {
     this.errorMsg = ""
    }
 
@@ -39,9 +41,9 @@ export class ListAnunciosComponent{
         
         this.dataSource.data.forEach((anuncio) =>{
           if(anuncio.pictures.length > 0){
-            this.service.getImage(anuncio.pictures[0].url).subscribe({
+            this.imgService.getImage(anuncio.pictures[0].url).subscribe({
               next: (imgBlob) =>{
-                this.anuncioImgsMap.set(anuncio, this.service.createImageFromBlob(imgBlob));
+                this.anuncioImages.addImage(anuncio, imgBlob);
               }
             });
           }
@@ -152,6 +154,6 @@ export class ListAnunciosComponent{
   }
 
   getImageForAnuncio(anuncio: Anuncio): any{
-    return this.anuncioImgsMap.get(anuncio);
+    return this.anuncioImages.getImage(anuncio);
   }
 }
