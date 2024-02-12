@@ -12,12 +12,17 @@ import { Venda } from "./models/Venda";
 
     url: string = 'http://localhost:8080/orders/'
 
-    listByFilters(page: number, userId: number, sortType: string, dataInicial: Date | null, dataFinal: Date | null): Observable<PaginationResponse<Order>>{
+    listByFilters(page: number, userId: number, sortType: string, dataInicial: Date | null, dataFinal: Date | null, 
+      filters?: {
+        descricao: string;
+      },
+      ): Observable<PaginationResponse<Order>>{
       var params = {
         "user-id": userId,
         "sortType": sortType,
         "page": page,
       }
+      Object.assign(params,filters);
       if(dataInicial && dataFinal){
         Object.assign(params, {dataInicial: this.dateToString.transform(dataInicial), dataFinal: this.dateToString.transform(dataFinal)})
       }

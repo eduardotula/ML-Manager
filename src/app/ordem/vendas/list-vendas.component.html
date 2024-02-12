@@ -1,15 +1,22 @@
 
-<div class="container card" style="margin-top: 10px;">
-  <filter-date (dateSelected)="onSubmitDate($event)" ></filter-date>
-</div>
 
-<ngx-loading [show]="loading"></ngx-loading>
+<div style="position: relative">
+  
 
-<div class="container-xl card" style="margin-top: 10px;">
+  <div class="container card" style="margin-top: 10px;">
+    <filter-date (textSelected)="applyFilters($event)" [initialDate]="initialDate" [finalDate]="finalDate" (dateSelected)="onSubmitDate($event)" ></filter-date>
+  </div>
+
+  <div>
+    <ngx-loading [show]="loading"></ngx-loading>
+  </div>
+
+  <div class="container-xl card" style="margin-top: 10px;">
+
     <table #tables mat-table [dataSource]="dataSource" class="table caption-top table-hover align-middle" matSort>
       
       <ng-container matColumnDef="img">
-        <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header></th>
+        <th mat-header-cell scope="col" *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let venda">
           <div class="col">
             <img [src]="anuncioImg.getImage(venda.anuncio)" alt="Image" style="height: 48px; width: 48px;">
@@ -17,29 +24,39 @@
         </td>
       </ng-container>
 
-      <div matColumnDef="vendasDescriptions">
+      <div matColumnDef="descricao">
         <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Produto</th>
         <td mat-cell *matCellDef="let venda" >{{venda.anuncio.descricao}}</td>
       </div>
     
     
-      <div matColumnDef="custoTotal">
+      <div matColumnDef="somaCusto">
         <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Custo Total</th>
         <td mat-cell *matCellDef="let venda" >{{venda.somaCusto | currency: "BRL"}}</td>
       </div>
-    
-  
-      <div matColumnDef="lucroTotal">
-        <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Lucro Total</th>
+
+      <div matColumnDef="somaVenda">
+        <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Venda Total</th>
         <td mat-cell *matCellDef="let venda">{{venda.somaLucro | currency: "BRL" }}</td>
       </div>
-    
+
+      <div matColumnDef="lucroLiquido">
+        <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Lucro Liquido</th>
+        <td mat-cell *matCellDef="let venda">{{venda.lucroLiquido | currency: "BRL" }}</td>
+      </div>
+
+
     
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
     
   </div>
-  
+
+</div>
+
+
+
+
   
   

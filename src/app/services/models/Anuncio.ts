@@ -18,10 +18,10 @@ export class Anuncio implements Searchable{
     public status: string;
     public createdAt: Date;
     public lucro: number;
-    public searchField: string = "";
     public complete: boolean;
     public pictures: Url[];
     public vendas: Venda[];
+    searchField: string;
 
     // Constructor
     constructor(

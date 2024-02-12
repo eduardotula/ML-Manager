@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Observable, expand, forkJoin, from } from 'rxjs';
-import { MlServiceService } from 'src/app/services/anuncios.service';
+import { AnuncioService } from 'src/app/services/anuncios.service';
 import { UserLSService } from 'src/app/services/local-storage/user-ls.service';
 import { Venda } from 'src/app/services/models/Venda';
 import { OrderService } from 'src/app/services/order.service';
@@ -10,6 +10,7 @@ import { MatSort } from '@angular/material/sort';
 import { ImageModel } from 'src/app/default-components/default-table/image-model';
 import { Anuncio } from 'src/app/services/models/Anuncio';
 import { ImageMLService } from 'src/app/services/image-ml.service';
+import { FilterDateData } from '../components/filter-date/filter-date.data';
 
 @Component({
     selector: 'list-vendas',
@@ -22,19 +23,26 @@ export class ListVendasComponent {
     @ViewChild(MatSort) sort!: MatSort;
     displayedColumns: string[] = [
         "img",
-        "vendasDescriptions",
-      'custoTotal',
-      'lucroTotal',
+        "descricao",
+      'somaCusto',
+      "somaVenda",
+      'lucroLiquido'
     ];
     dataSource = new MatTableDataSource<ListVendas>([]);
     errorMsg = "";
     loading: boolean = false;
     anuncioImg: ImageModel<Anuncio> = new ImageModel<Anuncio>();
+    initialDate: Date;
+    finalDate: Date;
 
-    constructor(private anuncioService: MlServiceService, private orderService: OrderService, private userLsService: UserLSService, private imgService: ImageMLService) { }
+    constructor(private anuncioService: AnuncioService, private orderService: OrderService, private userLsService: UserLSService, private imgService: ImageMLService) {
+        const currentDate = new Date();
+        this.initialDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+        this.finalDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())
+     }
 
-    ngAfterViewInit(): void {
-        this.populateTable(null, null)
+     ngOnInit(): void {
+        this.populateTable(this.initialDate, this.finalDate)
     }
 
     populateTable(dataInicial: Date| null, dataFinal: Date|null){
@@ -52,14 +60,14 @@ export class ListVendasComponent {
                         this.imgService.getImage(anuncio.pictures[0].url).subscribe((imgBlob) => this.anuncioImg.addImage(anuncio, imgBlob));
                     }
                 })
+                this.dataSource.sort = this.sort;
                 this.dataSource.data = listVenda;
+                this.table.renderRows();
+                this.loading = false;
                 this.observeVendas(requests);
-                
             },
             error: (error) => {
-                this.loading = false;
-                console.log(error);
-                this.errorMsg = error.message;
+                this.handleError(error);
             }
         })
     }
@@ -85,25 +93,35 @@ export class ListVendasComponent {
     observeVendas(requests: Observable<Venda[]>[]) {
         forkJoin(requests).subscribe({
             next: (resultsVendas) => {
+                this.loading = true;
                 resultsVendas.forEach(vendas => {
-                    var anuncios = this.dataSource.data.filter(listVendas => listVendas.anuncio.id == vendas[0].anuncio.id)
-                    if (anuncios.length > 0) {
-                        anuncios[0].vendas = vendas;
-                        anuncios[0].sumValues();
+                    if(vendas.length > 0){
+                        var anuncios = this.dataSource.data.filter(listVendas => listVendas.anuncio.id == vendas[0].anuncio.id)
+                        if (anuncios.length > 0) {
+                            anuncios[0].vendas = vendas;
+                            anuncios[0].sumValues();
+                        }
                     }
-                    this.loading = false;
                 })
+                this.loading = false;
             },
             error: (error) => {
-                this.loading = false;
-                console.log(error);
-                this.errorMsg = error.message;
+                this.handleError(error);
             }
         })
     }
 
-    onSubmitDate(datas: any){
+    onSubmitDate(datas: FilterDateData){
         this.populateTable(datas.dataInicial, datas.dataFinal);
     }
 
+    handleError(error: any){
+        this.loading = false;
+        console.log(error.message);
+        this.errorMsg = error.message;
+    }
+    
+    applyFilters(text: string){
+        this.dataSource.filter = text;
+    }
 }

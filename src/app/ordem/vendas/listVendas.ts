@@ -1,7 +1,8 @@
+import { Searchable } from "src/app/default-components/default-table/Searchable";
 import { Anuncio } from "src/app/services/models/Anuncio";
 import { Venda } from "src/app/services/models/Venda";
 
-export class ListVendas{
+export class ListVendas implements Searchable{
 
     public anuncio!: Anuncio;
     public vendas!: Venda[];
@@ -9,11 +10,14 @@ export class ListVendas{
     public somaCusto: number = 0;
     public somaVenda: number = 0;
     public somaLucro: number = 0;
+    public lucroLiquido: number = 0;
+    searchField: string;
 
     constructor(anuncio: Anuncio, vendas: Venda[]){
         this.anuncio = anuncio;
         this.vendas = vendas;
         this.sumValues();
+        this.searchField = anuncio.descricao;
     }
 
     public sumValues(){
@@ -23,5 +27,6 @@ export class ListVendas{
             this.somaVenda += venda.precoDesconto;
             this.somaLucro += venda.lucro;
         })
+        this.lucroLiquido = this.somaLucro - this.somaCusto;
     }
 }

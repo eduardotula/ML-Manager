@@ -1,74 +1,82 @@
 <div class="alert alert-danger" *ngIf="errorMsg"> {{errorMsg}}</div>
 
-<div class="container-sm">
-  <div class="row">
-    <div class="col-8" >
-      <h2>Registrar Anuncio</h2>
+<div class="container-sm" style="margin-top: 10px;">
+  <div class="card" style="margin-bottom: 20px;">
+    <div>
+      <h2 class="text-center">Registrar Anuncio</h2>
       <form [formGroup]="productForm">
-        
         <div class="form-group">
-          <label for="mlId">ML ID</label>
-          <input  type="text" id="mlId" name="mlId" class="form-control" formControlName="mlId">
-          <div class="alert alert-danger" *ngIf="mlId?.invalid && (mlId?.dirty || mlId?.touched)">Campo obrigatorio</div>
-        </div>
-        <div class="row">
 
-         <div class="form-group col-4">
-          <label for="">SKU</label>
-          <input class="form-control" id="sku" name="sku" formControlName="sku"  type="text" readonly>
+          <div class="row">
+            <label for="mlId">ML ID</label>
+            <div class="row">
+              <input  type="text" id="mlId" name="mlId" class="form-control col" formControlName="mlId" style="margin-right: 10px;">
+              <button  class="btn btn-primary col-2" (click)="openBuscarDialog()">Buscar</button>
+            </div>
           </div>
-         <div class="form-group col">
-          <label for="">Descrição</label>
-          <input class="form-control" id="descricao" name="descricao" formControlName="descricao"  type="text" readonly>
-          </div>
-
-        </div>
-
-
-         <div class="form-group">
-           <label for="custo">Custo</label>
-           <input type="number" class="form-control" id="custo" formControlName="custo">
-           <div class="alert alert-danger" *ngIf="custo?.invalid && (custo?.dirty || custo?.touched)">Campo obrigatorio</div>
-
-         </div>
-         <div class="form-group">
-            <label class="form-label" for="csosn">CSONS:</label>
-            <select class="form-select" formControlName="csosn">
-              <option value="102">102</option>
-              <option value="500">500</option>
-            </select>
-          <div class="alert alert-danger" *ngIf="csosn?.invalid && (csosn?.dirty || csosn?.touched)">Campo obrigatorio</div>
   
-         </div>
+          <div class="row">
+           <div class="col-4">
+            <label for="">SKU</label>
+            <input class="form-control" id="sku" name="sku" formControlName="sku"  type="text" readonly>
+            </div>
+           <div class="col">
+            <label for="">Descrição</label>
+            <input class="form-control" id="descricao" name="descricao" formControlName="descricao"  type="text" readonly>
+            </div>
+          </div>
+  
+           <div class="row">
+            <div class="col">
+              <label for="custo">Custo</label>
+              <input type="number" class="form-control" id="custo" formControlName="custo">
+              <div class="alert alert-danger" *ngIf="custo?.invalid && (custo?.dirty || custo?.touched)">Campo obrigatorio</div>
+            </div>
 
-         <div class="d-flex justify-content-center align-items-center" style="margin-top: 10px;">
-            <button type="submit" class="btn btn-primary" (click)="onSubmit()">Cadastrar</button>
-         </div>
+           </div>
+  
+           <div class="row">
+              <div class="col">
+                <label class="form-label" for="csosn">CSONS:</label>
+                <select class="form-select" formControlName="csosn">
+                  <option value="102">102</option>
+                  <option value="500">500</option>
+                </select>
+              <div class="alert alert-danger" *ngIf="csosn?.invalid && (csosn?.dirty || csosn?.touched)">Campo obrigatorio</div>
+              </div>
+           </div>
+  
+           <div class="d-flex justify-content-center align-items-center" style="margin-top: 10px; margin-bottom: 10px;">
+              <button type="submit" class="btn btn-primary" (click)="onSubmit()">Cadastrar</button>
+           </div>
+        </div>
+
       </form>
      </div>
-     <div class="col text-center">
-      <h2>Id de Anuncios</h2>
-      <div class=" table-responsive table-container">
-          <table class="table caption-top">
-            <thead>
-              <tr class="text-center">
-                <th scope="col">ML-ID</th>
-              </tr>
-            </thead>
-            <ngx-loading [show]="loading"></ngx-loading>
-            <tbody>
-              <tr class="text-center clikable" (click)="onTableClick(id)" *ngFor="let id of mlIds">
-
-                <td> {{id}}</td>
-  
-              </tr>
-            </tbody>
-          </table>
-       </div>
-     </div>
-
-  
   </div>
+
+  <ng-template class="container-sm dialog" #anuncioDialog>
+    <h2 matDialogTitle>Anuncios</h2>
+    <mat-dialog-content class="table-responsive table-container card">
+        <table class="table caption-top " >
+          <thead>
+            <tr class="text-center">
+              <th scope=""></th>
+              <th scope="">Produto</th>
+            </tr>
+          </thead>
+          <ngx-loading [show]="loading"></ngx-loading>
+          <tbody>
+            <tr class="text-center clikable text-nowrap" (click)="onTableClick(anuncio)" *ngFor="let anuncio of mlAnuncios">
+              <td>
+                <img [src]="getImageForAnuncio(anuncio)" alt="Image" style="height: 48px; width: 50px;">
+              </td>
+              <td><div>{{anuncio.title}}</div></td>
+            </tr>
+          </tbody>
+        </table>
+     </mat-dialog-content>
+   </ng-template>
   
 </div>
 

@@ -9,7 +9,7 @@ import { AnuncioSimple } from './models/AnuncioSimple';
 @Injectable({
   providedIn: 'root'
 })
-export class MlServiceService extends CommonService{
+export class AnuncioService extends CommonService{
 
   url: string = 'http://localhost:8080/anuncios/'
 

@@ -2,11 +2,11 @@
     <form [formGroup]="filterForm">
         <div class="row margin">
             <div class="col">
-                <input class="form-control" placeholder="Buscar Item">
+                <input class="form-control" (keyup)="keyPressed($event)" formControlName="text" placeholder="Buscar Item">
             </div>
         </div>
     
-        <div class="row margin">
+        <div class="row margin" *ngIf="initialDate">
             <div class="col">
                 <div class="row">
                     <div class="input-group form-group">

@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgbDateParserFormatter, NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { MlServiceService } from './services/anuncios.service';
+import { AnuncioService } from './services/anuncios.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CadastrarAnuncioComponent } from './anuncios/cadastrar/cadastrar-anuncio.component';
@@ -20,7 +20,12 @@ import { FilterDateComponent } from './ordem/components/filter-date/filter-date.
 import { NgbDatePipe } from './pipes/ngbDate.pipe';
 import { NgbDateCustomParserFormatter } from './utils/ngbDateCustomParserFormatter';
 import { DateToStringPipe } from './pipes/dateToString';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
+import { MercadoLivreService } from './services/mercado-livre.service';
+import { MatDialogModule } from '@angular/material/dialog';
 
+registerLocaleData(localePt);
 
 @NgModule({
     declarations: [
@@ -34,9 +39,10 @@ import { DateToStringPipe } from './pipes/dateToString';
         AnuncioStatusPipe,
         NgbDatePipe,
     ],
-    providers: [MlServiceService,
+    providers: [AnuncioService,
+        MercadoLivreService,
         DateToStringPipe,
-        { provide: LOCALE_ID, useValue: 'pt'},
+        { provide: LOCALE_ID, useValue: 'pt-BR' },
         {   provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter},],
     bootstrap: [AppComponent],
     imports: [
@@ -46,6 +52,7 @@ import { DateToStringPipe } from './pipes/dateToString';
         HttpClientModule,
         ReactiveFormsModule,
         FormsModule,
+        MatDialogModule,
         NgxLoadingModule.forRoot({
             animationType: ngxLoadingAnimationTypes.rectangleBounce,
             backdropBackgroundColour: 'rgba(0,0,0,0)',

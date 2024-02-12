@@ -1,15 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Observable, forkJoin } from 'rxjs';
 import { ImageModel } from 'src/app/default-components/default-table/image-model';
 import { ImageMLService } from 'src/app/services/image-ml.service';
 import { UserLSService } from 'src/app/services/local-storage/user-ls.service';
 import { AnuncioVenda } from 'src/app/services/models/AnuncioVenda';
+import { PageInfo } from 'src/app/services/models/MetaInfo';
 import { Order } from 'src/app/services/models/Order';
 import { Venda } from 'src/app/services/models/Venda';
 import { OrderService } from 'src/app/services/order.service';
+import { FilterDateData } from '../components/filter-date/filter-date.data';
 
 @Component({
   selector: 'list-vendas',
@@ -17,11 +18,10 @@ import { OrderService } from 'src/app/services/order.service';
   styleUrls: ['./list-ordens.component.scss'],
 })
 export class ListOrdensComponent {
-  @ViewChild('tables') table!: MatTable<Order>;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('table') table!: MatTable<Order>;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
   displayedColumns: string[] = [
-    'alert',
-    'vendasDescriptions',
+    "descricao",
     'custoTotal',
     'lucroTotal',
   ];
@@ -31,44 +31,57 @@ export class ListOrdensComponent {
   panelOpenState = false;
   anuncioImage: ImageModel<Venda>;
   dataSource = new MatTableDataSource<Order>([]);
+  initialDate: Date;
+  finalDate: Date;
+  pagination: PageInfo = new PageInfo();
+  filters!: FilterDateData;
 
   constructor(
     public orderService: OrderService,
     public lsUser: UserLSService,
     public router: Router,
-    private imgService: ImageMLService
+    private imgService: ImageMLService,
   ) {
+    const currentDate = new Date();
+    this.initialDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+    this.finalDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())
     this.anuncioImage = new ImageModel<Venda>();
   }
 
-  ngAfterViewInit(): void {
-    this.populateTable(null, null);
+  ngOnInit(): void {
+    this.filters = new FilterDateData(this.initialDate, this.finalDate, "");
+    this.populateTable(this.filters);
   }
 
-  onSubmitDate(filters: any){
-    this.populateTable(filters.dataInicial, filters.dataFinal);
+  onSubmitDate(filters: FilterDateData){
+    this.filters = filters;
+    this.populateTable(filters);
   }
 
-  populateTable(dataInicial: Date | null, dataFinal: Date| null){
+  populateTable(filter: FilterDateData){
     this.loading = true;
+    this.dataSource.sort = this.sort;
     this.orderService
-      .listByFilters(0, this.lsUser.getCurrentUser(), 'desc', dataInicial, dataFinal)
+      .listByFilters(this.pagination.page, this.lsUser.getCurrentUser(), 'DESC', filter.dataInicial, filter.dataFinal, {descricao: filter.text})
       .subscribe({
         next: (orders) => {
           this.dataSource.data = orders.results;
+          this.pagination = orders.metaInfo.pageInfo;
+          this.table.renderRows();
+          this.loading = false;
 
           orders.results.forEach((order) => {
             order.vendas.forEach((venda) => {
               if(venda.anuncio.fotoCapa){
+                this.loading = true;
                 this.imgService.getImage(venda.anuncio.fotoCapa).subscribe({
                   next: (imgBlob) =>{
                     this.anuncioImage.addImage(venda, imgBlob);
                     this.loading = false;
                   },
                   error: (error) => {
-                    this.loading = false;
-                    console.log(error.message);
-                    this.errorMsg = error.message;
+                    this.handleError(error);
+
                   },
                 });
               }
@@ -76,11 +89,15 @@ export class ListOrdensComponent {
           });
         },
         error: (error) => {
-          this.loading = false;
-          console.log(error.message);
-          this.errorMsg = error.message;
+          this.handleError(error);
         },
       });
+  }
+
+  handleError(error: any){
+    this.loading = false;
+    console.log(error.message);
+    this.errorMsg = error.message;
   }
 
   sumItemsInOrder(order: Order): number {
@@ -118,7 +135,18 @@ export class ListOrdensComponent {
     return this.anuncioImage.getImage(venda);
   }
 
-  getThumbForOder(order: Order): any{
-    
+  nextPage(){
+    if(this.pagination.page < this.pagination.totalPages-1){
+      this.pagination.page += 1;
+      this.populateTable(this.filters);
+    }
   }
+
+  previusPage(){
+    if(this.pagination.page > 0){
+      this.pagination.page -= 1;
+      this.populateTable(this.filters);
+    } 
+  }
+
 }

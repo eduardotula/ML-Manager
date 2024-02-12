@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { error } from 'jquery';
-import { MlServiceService } from 'src/app/services/anuncios.service';
-import { LocalStorageService } from 'src/app/services/local-storage/local-storage.service';
+import { Observable, forkJoin } from 'rxjs';
+import { ImageModel } from 'src/app/default-components/default-table/image-model';
+import { AnuncioService } from 'src/app/services/anuncios.service';
+import { ImageMLService } from 'src/app/services/image-ml.service';
 import { UserLSService } from 'src/app/services/local-storage/user-ls.service';
+import { MercadoLivreService } from 'src/app/services/mercado-livre.service';
 import { AnuncioSimple } from 'src/app/services/models/AnuncioSimple';
+import { MercadoLivreAnuncio } from 'src/app/services/models/MercadoLivreAnuncio';
 
 @Component({
   selector: 'app-cadastrar-anuncio',
@@ -16,13 +20,17 @@ export class CadastrarAnuncioComponent implements OnInit {
   
   loading: boolean = true;
   productForm!: FormGroup;
-  mlIds!: string[];
+  mlAnuncios!: MercadoLivreAnuncio[];
   name: any;
   isCreate: boolean = true;
   errorMsg: string = "";
+  @ViewChild('anuncioDialog', { static: true })
+  anunciosDialog!: TemplateRef<any>;
+  anuncioImages: ImageModel<MercadoLivreAnuncio> = new ImageModel();
 
-  constructor(private formBuilder: FormBuilder, public service: MlServiceService, public lsUser: UserLSService,
-    public route: ActivatedRoute, public router: Router) {
+  constructor(private formBuilder: FormBuilder, public service: AnuncioService, public lsUser: UserLSService,
+    public route: ActivatedRoute, public router: Router, private mlService: MercadoLivreService, private dialog: MatDialog,
+    private mlImageService: ImageMLService) {
 
     this.route.queryParams.subscribe(params =>{
       this.productForm = this.formBuilder.group({
@@ -44,8 +52,7 @@ export class CadastrarAnuncioComponent implements OnInit {
     this.loading = true;
     this.service.listAllActiveMlMinuscomplete(this.lsUser.getCurrentUser()).subscribe({
       next: (ids) => {
-        this.mlIds = ids;
-        this.loading = false;
+        this.setMercadoLivreAnuncios(ids);
       },
       error: (msg) => {
         this.errorMsg = msg.message;
@@ -53,15 +60,16 @@ export class CadastrarAnuncioComponent implements OnInit {
       }
     });
     if(!this.productForm.valid){
-      this.productForm = this.formBuilder.group({
-        mlId: ["", Validators.required],
-        custo: ["", Validators.required],
-        csosn: [null, Validators.required],
-        sku: [""],
-        descricao: [""],
-      });
+      this.resetForm();
     }
+  }
 
+  openBuscarDialog(){
+    //Correção de top bar
+    this.dialog.open(this.anunciosDialog, {
+      width: "70vw",
+      position: {top: "20vh"}
+    });
   }
 
   get mlId(){
@@ -83,7 +91,35 @@ export class CadastrarAnuncioComponent implements OnInit {
     return this.productForm.get("sku");
   }
 
+  setMercadoLivreAnuncios(ids: string[]){
+    var anuncioObser: Observable<MercadoLivreAnuncio>[] = [];
 
+    ids.forEach(id => anuncioObser.push(this.mlService.getAnuncioByMlId(id)))
+    forkJoin(anuncioObser).subscribe({
+      next: (mercadoLivreAnuncio) =>{
+        this.mlAnuncios = mercadoLivreAnuncio;
+
+        mercadoLivreAnuncio.forEach(mlanuncio =>{
+          if(mlanuncio.pictures.length > 0){
+            this.mlImageService.getImage(mlanuncio.pictures[0].url).subscribe({
+              next: (imgBlob) => {
+                this.anuncioImages.addImage(mlanuncio, imgBlob);
+                this.loading = false;
+              },
+              error: (error)=>{
+                this.loading = false;
+                this.errorMsg = error.message;
+              }
+            });
+          }
+        })
+
+      }, error: (error) =>{
+        this.loading = false;
+        this.errorMsg = error.message;
+      }
+    })
+  }
 
   onSubmit() {
     if (this.productForm.valid) {
@@ -95,22 +131,21 @@ export class CadastrarAnuncioComponent implements OnInit {
 
           if(this.isCreate && !existAnuncio)  this.createAnuncio(anuncioSimple);
             else this.updateAnuncio(anuncioSimple);
-          
+
         },error: (error) =>{
           this.errorMsg = error.message;
           this.loading = false;
         }
       });
-
-
     } else {
       console.log('Form is invalid');
     }
   }
 
-  onTableClick(mlId: string){
+  onTableClick(anuncio: MercadoLivreAnuncio){
+    this.dialog.closeAll();
     this.loading = true;
-    this.service.getAnuncioByMlIdSearch(mlId, this.lsUser.getCurrentUser()).subscribe({next: (prod) => {
+    this.service.getAnuncioByMlIdSearch(anuncio.id, this.lsUser.getCurrentUser()).subscribe({next: (prod) => {
       this.productForm.patchValue({
         descricao: prod.descricao,
         sku: prod.sku,
@@ -123,13 +158,17 @@ export class CadastrarAnuncioComponent implements OnInit {
     }});
 
     this.productForm.patchValue({
-      mlId: mlId,
+      mlId: anuncio.id,
     })
   }
 
   createAnuncio(anuncioSimple: AnuncioSimple){
     this.service.createAnuncioSearch(anuncioSimple, this.lsUser.getCurrentUser()).subscribe({
-      next: () => window.location.reload(),
+      next: () => {
+        this.mlAnuncios = this.mlAnuncios.filter(anuncio => anuncio.id != anuncioSimple.mlId);
+        this.resetPageState();
+        this.resetForm();
+      },
       error: (error) => {
         this.errorMsg = error.message;
         this.loading = false;
@@ -147,8 +186,22 @@ export class CadastrarAnuncioComponent implements OnInit {
       });
   }
 
+  getImageForAnuncio(anuncio: MercadoLivreAnuncio){
+    return this.anuncioImages.getImage(anuncio);
+  }
+
   resetPageState(){
     this.loading = false;
     this.errorMsg = "";
+  }
+
+  resetForm(){
+    this.productForm = this.formBuilder.group({
+      mlId: ["", Validators.required],
+      custo: ["", Validators.required],
+      csosn: [null, Validators.required],
+      sku: [""],
+      descricao: [""],
+    });
   }
 }

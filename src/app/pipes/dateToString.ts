@@ -3,7 +3,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({name: 'dateToString'})
 export class DateToStringPipe implements PipeTransform {
     transform(date: Date): string {
-        date.setUTCHours(0, 0, 0, 0);
-        return date.toISOString().split('.')[0];
+        var newDate = new Date(date.toDateString());
+        newDate.setUTCHours(0,0,0,0);
+        return newDate.toISOString().split('.')[0];
     }
 }

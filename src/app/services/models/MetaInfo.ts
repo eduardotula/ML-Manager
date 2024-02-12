@@ -17,16 +17,16 @@ class MetaInfo {
 class PageInfo {
     public first: boolean;
     public last: boolean;
-    public page: number | null;
-    public pageSize: number | null;
-    public totalPages: number | null;
+    public page: number;
+    public pageSize: number;
+    public totalPages: number;
 
     constructor() {
         this.first = false;
         this.last = false;
-        this.page = null;
-        this.pageSize = null;
-        this.totalPages = null;
+        this.page = 0;
+        this.pageSize = 0;
+        this.totalPages = 0;
     }
 }
 
