@@ -11,6 +11,7 @@ import { ImageModel } from 'src/app/default-components/default-table/image-model
 import { Anuncio } from 'src/app/services/models/Anuncio';
 import { ImageMLService } from 'src/app/services/image-ml.service';
 import { FilterDateData } from '../components/filter-date/filter-date.data';
+import { data } from 'jquery';
 
 @Component({
     selector: 'list-vendas',
@@ -24,9 +25,9 @@ export class ListVendasComponent {
     displayedColumns: string[] = [
         "img",
         "descricao",
-      'somaCusto',
-      "somaVenda",
-      'lucroLiquido'
+        "quantidade",
+        "somaVenda",
+      'somaLucro'
     ];
     dataSource = new MatTableDataSource<ListVendas>([]);
     errorMsg = "";
@@ -123,5 +124,13 @@ export class ListVendasComponent {
     
     applyFilters(text: string){
         this.dataSource.filter = text;
+    }
+
+    sumLucro(){
+        var sum = 0;
+        this.dataSource.filteredData.forEach(data =>{
+            sum += data.somaLucro;
+        });
+        return sum;
     }
 }

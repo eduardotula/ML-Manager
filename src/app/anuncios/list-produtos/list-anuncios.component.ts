@@ -169,4 +169,35 @@ export class ListAnunciosComponent{
   getImageForAnuncio(anuncio: Anuncio): any{
     return this.anuncioImages.getImage(anuncio);
   }
+
+  
+  exportAnuncio(){
+    var xmlDoc = document.implementation.createDocument(null, 'anuncios');
+
+    var index = 1;
+    this.dataSource.filteredData.forEach(row =>{
+      let anuncio = xmlDoc.createElement("anuncio_"+index);
+      let mlId = xmlDoc.createElement("mlId");
+      mlId.textContent = row.mlId;
+      let custo = xmlDoc.createElement("custo");
+      custo.textContent = row.custo.toString();
+      let csosn = xmlDoc.createElement("csosn");
+      csosn.textContent = row.csosn;
+      anuncio.appendChild(mlId);
+      anuncio.appendChild(custo);
+      anuncio.appendChild(csosn);
+
+      xmlDoc.documentElement.appendChild(anuncio);
+      index++;
+    })
+
+    var serializer = new XMLSerializer();
+    var xmlString = serializer.serializeToString(xmlDoc);
+    let blob = new Blob([xmlString], {type: "text/xml"});
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Anuncios.xml';
+    a.click();
+  }
 }

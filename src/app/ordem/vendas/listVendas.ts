@@ -10,13 +10,11 @@ export class ListVendas implements Searchable{
     public somaCusto: number = 0;
     public somaVenda: number = 0;
     public somaLucro: number = 0;
-    public lucroLiquido: number = 0;
     searchField: string;
 
     constructor(anuncio: Anuncio, vendas: Venda[]){
         this.anuncio = anuncio;
         this.vendas = vendas;
-        this.sumValues();
         this.searchField = anuncio.descricao;
     }
 
@@ -27,6 +25,5 @@ export class ListVendas implements Searchable{
             this.somaVenda += venda.precoDesconto;
             this.somaLucro += venda.lucro;
         })
-        this.lucroLiquido = this.somaLucro - this.somaCusto;
     }
 }

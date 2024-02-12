@@ -45,7 +45,7 @@ export class FilterDateComponent implements OnInit {
             var fin: NgbDateStruct = this.filterForm.value["dataFinal"];
             var text: string = this.filterForm.value["text"];
             var dataInicial = new Date(`${ini.year}-${ini.month}-${ini.day}`);
-            var dataFinal = new Date(fin.year, fin.month, fin.day, 23, 59, 59, 999);
+            var dataFinal = new Date(fin.year, fin.month-1, fin.day, 23, 59, 59, 999);
             this.dateSelected.emit(new FilterDateData(dataInicial, dataFinal, text));
         }
      }
