@@ -6,7 +6,7 @@ export class AnuncioStatusPipe implements PipeTransform {
     transform(status: string): string {
         switch(status){
             case "active": return "Ativo"
-            case "closed": return "Desativado"
+            case "paused": return "Pausado"
         }
         return status;
     }

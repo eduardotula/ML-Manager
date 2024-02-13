@@ -133,4 +133,12 @@ export class ListVendasComponent {
         });
         return sum;
     }
+    
+    sumVendaTotal(){
+        var sum = 0;
+        this.dataSource.filteredData.forEach(data =>{
+            sum += data.somaVenda;
+        });
+        return sum;
+    }
 }

@@ -63,15 +63,17 @@
             <tr class="text-center">
               <th scope=""></th>
               <th scope="">Produto</th>
+              <th scope="">Status</th>
             </tr>
           </thead>
           <ngx-loading [show]="loading"></ngx-loading>
           <tbody>
-            <tr class="text-center clikable text-nowrap" (click)="onTableClick(anuncio)" *ngFor="let anuncio of mlAnuncios">
+            <tr class="text-center clikable text-nowrap" (click)="onTableClick(anuncio.id)" *ngFor="let anuncio of mlAnuncios">
               <td>
-                <img [src]="getImageForAnuncio(anuncio)" alt="Image" style="height: 48px; width: 50px;">
+                <img [src]="getImageForAnuncio(anuncio)" alt="Image" style="height: 48px; width: 60px;">
               </td>
               <td><div>{{anuncio.title}}</div></td>
+              <td><div>{{anuncio.status | anuncioStatus}}</div></td>
             </tr>
           </tbody>
         </table>

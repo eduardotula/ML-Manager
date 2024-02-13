@@ -19,10 +19,10 @@ import { MercadoLivreAnuncio } from 'src/app/services/models/MercadoLivreAnuncio
 export class CadastrarAnuncioComponent implements OnInit {
   
   loading: boolean = true;
+  containsRouteParams = false;
   productForm!: FormGroup;
   mlAnuncios!: MercadoLivreAnuncio[];
   name: any;
-  isCreate: boolean = true;
   errorMsg: string = "";
   @ViewChild('anuncioDialog', { static: true })
   anunciosDialog!: TemplateRef<any>;
@@ -42,7 +42,9 @@ export class CadastrarAnuncioComponent implements OnInit {
       })
       if(params['mlId']) this.onTableClick(params["mlId"]);
 
-      if(this.productForm.valid)this.isCreate = false;
+      if(this.productForm.valid){
+        this.containsRouteParams = true;
+      }
     });
   }
 
@@ -50,9 +52,18 @@ export class CadastrarAnuncioComponent implements OnInit {
   ngOnInit() {
     this.resetPageState();
     this.loading = true;
-    this.service.listAllActiveMlMinuscomplete(this.lsUser.getCurrentUser()).subscribe({
-      next: (ids) => {
-        this.setMercadoLivreAnuncios(ids);
+    //Filtra para que somente anuncios que não estão registrados sejam exibidos
+    this.service.listAllAnunciosMercadoLivre(this.lsUser.getCurrentUser(), true).subscribe({
+      next: (mlIds) => {
+        this.service.listAll(this.lsUser.getCurrentUser(), true).subscribe({
+          next: (anuncios) => {
+            var registeredIds = new Set(anuncios.map((anuncio) => anuncio.mlId));
+            var filtered = mlIds.filter(mlId => !registeredIds.has(mlId));
+
+            this.setMercadoLivreAnuncios(filtered);
+          }
+        });
+
       },
       error: (msg) => {
         this.errorMsg = msg.message;
@@ -129,8 +140,11 @@ export class CadastrarAnuncioComponent implements OnInit {
       this.service.getAnuncioByMlId(anuncioSimple.mlId, this.lsUser.getCurrentUser(), false).subscribe({
         next: (existAnuncio) => {
 
-          if(this.isCreate && !existAnuncio)  this.createAnuncio(anuncioSimple);
-            else this.updateAnuncio(anuncioSimple);
+          if(!this.containsRouteParams && !existAnuncio){
+              this.createAnuncio(anuncioSimple);
+          } else {
+            this.updateAnuncio(anuncioSimple, this.containsRouteParams);
+          }
 
         },error: (error) =>{
           this.errorMsg = error.message;
@@ -142,10 +156,10 @@ export class CadastrarAnuncioComponent implements OnInit {
     }
   }
 
-  onTableClick(anuncio: MercadoLivreAnuncio){
+  onTableClick(mlId: string ){
     this.dialog.closeAll();
     this.loading = true;
-    this.service.getAnuncioByMlIdSearch(anuncio.id, this.lsUser.getCurrentUser()).subscribe({next: (prod) => {
+    this.service.getAnuncioByMlIdSearch(mlId, this.lsUser.getCurrentUser()).subscribe({next: (prod) => {
       this.productForm.patchValue({
         descricao: prod.descricao,
         sku: prod.sku,
@@ -158,7 +172,7 @@ export class CadastrarAnuncioComponent implements OnInit {
     }});
 
     this.productForm.patchValue({
-      mlId: anuncio.id,
+      mlId: mlId,
     })
   }
 
@@ -176,9 +190,14 @@ export class CadastrarAnuncioComponent implements OnInit {
       });
   }
 
-  updateAnuncio(anuncioSimple: AnuncioSimple){
+  updateAnuncio(anuncioSimple: AnuncioSimple, navigateToHome: boolean){
     this.service.updateAnuncioSimple(anuncioSimple, this.lsUser.getCurrentUser()).subscribe({
-      next: () => this.router.navigate([""]),
+      next: () => {
+        if(navigateToHome)
+          this.router.navigate([""]);
+          this.resetPageState();
+          this.resetForm();
+      },
       error: (error) => {
         this.errorMsg = error.message;
         this.loading = false;

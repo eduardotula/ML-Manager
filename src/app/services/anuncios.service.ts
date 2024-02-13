@@ -14,18 +14,13 @@ export class AnuncioService extends CommonService{
   url: string = 'http://localhost:8080/anuncios/'
 
 
-  listAllActivesAnunciosIds(userId: number): Observable<string[]>{
+  listAllAnunciosMercadoLivre(userId: number, includePaused: boolean): Observable<string[]>{
     var params = {
       "user-id": userId,
+      "include-paused": includePaused
     };
-    return this.http.get<string[]>(this.url + "status-active",{params:params}).pipe(catchError(this.handleError));
-  }
 
-  listAllActiveMlMinuscomplete(userId: number): Observable<string[]>{
-    var params = {
-      "user-id": userId,
-    };
-    return this.http.get<string[]>(this.url + "list-all-active-minus-complete", {params:params}).pipe(catchError(this.handleError));
+    return this.http.get<string[]>(this.url + "mercado-livre", {params:params}).pipe(catchError(this.handleError));
   }
 
   listAll(userId: number, complete: boolean): Observable<Anuncio[]>{
