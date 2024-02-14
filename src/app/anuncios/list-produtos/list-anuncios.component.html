@@ -23,8 +23,7 @@
       <div class="text-end click-ml-url" (click)="exportToExcel()">Baixar Excel</div>
 
 
-      <table #tables mat-table [dataSource]="dataSource" class="table caption-top table-striped table-hover" matSort
-      (matSortChange)="announceSortChange($event)">
+      <table #tables mat-table [dataSource]="dataSource" class="table caption-top table-striped table-hover" matSort>
 
         <ng-container matColumnDef="id">
           <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header></th>
@@ -80,6 +79,11 @@
           <td mat-cell *matCellDef="let anuncio">{{ anuncio.status | anuncioStatus }}</td>
         </ng-container>
 
+        <ng-container matColumnDef="calcular">
+          <th mat-header-cell scope="col" *matHeaderCellDef ></th>
+          <td mat-cell *matCellDef="let anuncio"><img class="hover-icon" (click)="openBuscarDialog(anuncio)" src="../../../assets/pencil.svg" width="16" height="16"></td>
+        </ng-container>
+
         <ng-container matColumnDef="edit">
           <th mat-header-cell scope="col" *matHeaderCellDef ></th>
           <td mat-cell *matCellDef="let anuncio"><img class="hover-icon" (click)="clickEdit(anuncio)" src="../../../assets/pencil.svg" width="16" height="16"></td>
@@ -102,6 +106,12 @@
     </div>
     
     </div>
+
+<ng-template class="container-sm dialog" #calcularDialog>
+  <mat-dialog-content class="table-responsive table-container card">
+    <calcular-anuncio></calcular-anuncio>
+  </mat-dialog-content>
+</ng-template>
 
 
 

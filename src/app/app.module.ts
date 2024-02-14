@@ -24,6 +24,7 @@ import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { MercadoLivreService } from './services/mercado-livre.service';
 import { MatDialogModule } from '@angular/material/dialog';
+import { CalcularAnuncioComponent } from './anuncios/calcular-anuncio/calcular-anuncio.component';
 
 registerLocaleData(localePt);
 
@@ -38,6 +39,7 @@ registerLocaleData(localePt);
         DateToStringPipe,
         AnuncioStatusPipe,
         NgbDatePipe,
+        CalcularAnuncioComponent
     ],
     providers: [AnuncioService,
         MercadoLivreService,

@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, forkJoin } from 'rxjs';
 import { AnuncioService } from 'src/app/services/anuncios.service';
@@ -10,7 +10,7 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { UserLSService } from 'src/app/services/local-storage/user-ls.service';
 import { ImageMLService } from 'src/app/services/image-ml.service';
 import { ImageModel } from 'src/app/default-components/default-table/image-model';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-list-anuncios',
@@ -21,29 +21,20 @@ export class ListAnunciosComponent{
 
   @ViewChild("tables") table!: MatTable<Anuncio>;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('calcularDialog', { static: true })
+  calcularDialog!: TemplateRef<any>;
 
   dataSource = new MatTableDataSource<Anuncio>([]);
   loading: boolean = true;
   errorMsg: string = "";
-  displayedColumns: string[] = ['id', 'mlId', "sku", "descricao", "custo", "venda", "taxaMl", "frete", "lucro","status", "edit", "update", "delete"];
+  displayedColumns: string[] = ['id', 'mlId', "sku", "descricao", "custo", "venda", "taxaMl", "frete", "lucro","status","calcular" ,"edit", "update", "delete"];
   anuncioImages: ImageModel<Anuncio> = new ImageModel();
 
-  constructor(public service: AnuncioService,public lsUser: UserLSService, public router: Router, private imgService: ImageMLService,
-    private _liveAnnouncer: LiveAnnouncer) {
-    this.errorMsg = ""
-   }
-
-   announceSortChange(sortState: Sort) {
-    // This example uses English messages. If your application supports
-    // multiple language, you would internationalize these strings.
-    // Furthermore, you can customize the message to add additional
-    // details about the values being sorted.
-    if (sortState.direction) {
-      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-    } else {
-      this._liveAnnouncer.announce('Sorting cleared');
-    }
-  }
+  constructor(
+    public service: AnuncioService,
+    public lsUser: UserLSService,
+    public router: Router, private imgService: ImageMLService,
+    private dialog: MatDialog) {}
 
    ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
@@ -97,6 +88,15 @@ export class ListAnunciosComponent{
     this.service.updateAnuncioSearchByMlId(anuncio.mlId, this.lsUser.getCurrentUser()).subscribe({
       next: () => window.location.reload(),
       error: (err) => this.errorMsg = err.message
+    });
+  }
+
+  openBuscarDialog(anuncio: Anuncio){
+    //Correção de top bar
+    this.dialog.open(this.calcularDialog, {
+      width: "40vw",
+      data:{anuncio: anuncio},
+      position: {top: "20vh"}
     });
   }
 
