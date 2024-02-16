@@ -1,7 +1,7 @@
 
 
 <div style="position: relative">
-  
+  <div class="alert alert-danger" *ngIf="errorMsg"> {{errorMsg}}</div>
 
   <div class="container card" style="margin-top: 10px;">
     <filter-date (textSelected)="applyFilters($event)" [initialDate]="initialDate" [finalDate]="finalDate" (dateSelected)="onSubmitDate($event)" ></filter-date>

@@ -81,7 +81,7 @@
 
         <ng-container matColumnDef="calcular">
           <th mat-header-cell scope="col" *matHeaderCellDef ></th>
-          <td mat-cell *matCellDef="let anuncio"><img class="hover-icon" (click)="openBuscarDialog(anuncio)" src="../../../assets/pencil.svg" width="16" height="16"></td>
+          <td mat-cell *matCellDef="let anuncio"><img class="hover-icon" (click)="openBuscarDialog(anuncio)" src="../../../assets/calculator.svg" width="16" height="16"></td>
         </ng-container>
 
         <ng-container matColumnDef="edit">
@@ -107,7 +107,7 @@
     
     </div>
 
-<ng-template class="container-sm dialog" #calcularDialog>
+<ng-template class="container-sm dialog"  #calcularDialog>
   <mat-dialog-content class="table-responsive table-container card">
     <calcular-anuncio></calcular-anuncio>
   </mat-dialog-content>

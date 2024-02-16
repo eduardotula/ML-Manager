@@ -1,5 +1,7 @@
 <div class="container">
-    <h2 class="text-center">Calculadora de Anuncio</h2>
+    <h3 class="text-center">Calculadora de Anuncio</h3>
+    <div class="alert alert-danger" *ngIf="errorMsg"> {{errorMsg}}</div>
+
     <form>
         <div class="row card" style="margin: 20px">
             <!-- Preço de venda -->
@@ -7,17 +9,24 @@
             <div class="row" style="margin-top: 10px;">
                 <div class="col-md-6">
                     <label class="form-label" >Valor do Anuncio</label>
-                    <input type="text" class="form-control" name="precoDesconto" (ngModelChange)="changeVenda($event)" [ngModel]="precoDesconto">
+                    <input type="number" class="form-control" name="precoDesconto" [(ngModel)]="precoDesconto">
                 </div>
             </div>
 
             <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
                 <div class="col-md-6">
                     <label class="form-label" >Lucro</label>
-                    <input type="text" name="lucro" [ngModel]="lucro" (ngModelChange)="changeLucro($event)" class="form-control">
+                    <input type="text" name="lucro" [value]="lucro | currency : 'BRL'"  class="form-control disabled-input" readonly>
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-6">
+                    <button class="btn btn-primary"  (click)="calculateLucro()">Calcular</button>
                 </div>
             </div>
         </div>
+        <ngx-loading [show]="loading"></ngx-loading>
 
         <div class="row card" style="margin:20px">
             <span class="card-header text-center">Custos e Tarifas</span>

@@ -4,6 +4,7 @@ import { Observable, catchError } from 'rxjs';
 import { CommonService } from './common.service';
 import { Anuncio } from './models/Anuncio';
 import { AnuncioSimple } from './models/AnuncioSimple';
+import { AnuncioSimulation } from './models/AnuncioSimulation';
 
 
 @Injectable({
@@ -76,5 +77,18 @@ export class AnuncioService extends CommonService{
     };
     return this.http.put<Anuncio>(this.url + `${mlId}/search`, {}, {params}).pipe(catchError(this.handleError));
   }
+
+  simulateAnuncio(anuncioSimulation: AnuncioSimulation, userId: number): Observable<any>{
+    var params = {
+      "categoria": anuncioSimulation.categoria,
+      "valor-venda": anuncioSimulation.valorVenda,
+      "custo": anuncioSimulation.custo,
+      "custo-frete": anuncioSimulation.custoFrete,
+      "csosn": anuncioSimulation.csosn,
+      "tipo-anuncio": anuncioSimulation.tipoAnuncio,
+      "user-id": userId,
+    };
+    return this.http.get<any>(this.url + `simulation`, {params}).pipe(catchError(this.handleError));
+  } 
 
 }

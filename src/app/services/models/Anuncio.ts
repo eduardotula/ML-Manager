@@ -18,6 +18,7 @@ export class Anuncio implements Searchable{
     public status: string;
     public createdAt: Date;
     public lucro: number;
+    public listingType: string;
     public imposto: number;
     public complete: boolean;
     public pictures: Url[];
@@ -44,7 +45,8 @@ export class Anuncio implements Searchable{
         complete: boolean,
         pictures: Url[],
         vendas: Venda[],
-        imposto: number
+        imposto: number,
+        listingType: string
     ) {
         this.id = id;
         this.mlId = mlId;
@@ -64,6 +66,7 @@ export class Anuncio implements Searchable{
         this.complete = complete;
         this.pictures = pictures;
         this.vendas = vendas;
+        this.listingType = listingType;
         this.imposto = imposto;
         //Utilizado para busca
         this.searchField = descricao;

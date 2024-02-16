@@ -1,6 +1,7 @@
 
 
 <div style="position: relative">
+  <div class="alert alert-danger" *ngIf="errorMsg"> {{errorMsg}}</div>
   <ngx-loading [show]="loading"></ngx-loading>
 
 
