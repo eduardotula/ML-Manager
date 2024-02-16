@@ -4,13 +4,19 @@
         <div class="row card" style="margin: 20px">
             <!-- Preço de venda -->
             <span class="card-header text-center">Anuncio</span>
-            <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+            <div class="row" style="margin-top: 10px;">
                 <div class="col-md-6">
                     <label class="form-label" >Valor do Anuncio</label>
-                    <input type="number" class="form-control">
+                    <input type="text" class="form-control" name="precoDesconto" (ngModelChange)="changeVenda($event)" [ngModel]="precoDesconto">
                 </div>
             </div>
 
+            <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                <div class="col-md-6">
+                    <label class="form-label" >Lucro</label>
+                    <input type="text" name="lucro" [ngModel]="lucro" (ngModelChange)="changeLucro($event)" class="form-control">
+                </div>
+            </div>
         </div>
 
         <div class="row card" style="margin:20px">
@@ -20,32 +26,35 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label class="form-label" >Custo da Mercadoria</label>
-                        <input type="number" class="form-control">
+                        <input type="text"  [value]="anuncio.custo | currency :'BRL' " class="form-control disabled-input" readonly>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6">
                         <label class="form-label" >CSOSN</label>
-                        <input type="number" class="form-control">
+                        <input type="text" [value]="anuncio.csosn" class="form-control disabled-input"  readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" >Imposto</label>
+                        <input type="text" [value]="anuncio.imposto| currency:'BRL'"  class="form-control disabled-input" readonly>
                     </div>
                 </div>
+
 
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col-md-6">
                         <label class="form-label" >TaxaML</label>
-                        <input type="number" class="form-control">
+                        <input type="text" [value]="anuncio.taxaML| currency:'BRL'" class="form-control disabled-input"readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" >Frete</label>
+                        <input type="text" [value]="anuncio.custoFrete| currency:'BRL'" class="form-control disabled-input" readonly>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row justify-content-end" >
-            <div class="col-sm-4" style="margin-right: 20px;">
-                <label class="form-label" style="color: black;">TaxaML</label>
-                <input type="number" class="form-control">
-            </div>  
-        </div>
     </form>
 
 

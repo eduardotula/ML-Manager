@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Inject, OnInit} from '@angular/core';
+import { Component, Output, EventEmitter, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Anuncio } from 'src/app/services/models/Anuncio';
 
@@ -9,10 +9,29 @@ import { Anuncio } from 'src/app/services/models/Anuncio';
 })
 export class CalcularAnuncioComponent implements OnInit {
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: Anuncio ) {}
+    anuncio: Anuncio;
+    lucro: number = 0;
+    precoDesconto: number = 0;
+
+    constructor(
+        @Inject(MAT_DIALOG_DATA) public data: any) {
+            var anuncio = data.anuncio;
+            this.anuncio = anuncio;
+         }
+
+
 
     ngOnInit(): void {
         console.log(this.data);
+        this.precoDesconto = this.anuncio.precoDesconto;
+        this.lucro = this.anuncio.lucro;
+    }
+
+    changeLucro(newValue: any){
+        
+    }
+
+    changeVenda(newValue: any){
+
     }
 }
