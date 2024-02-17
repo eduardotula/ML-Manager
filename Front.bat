@@ -1,0 +1,1 @@
+serve dist/ml-manager-front

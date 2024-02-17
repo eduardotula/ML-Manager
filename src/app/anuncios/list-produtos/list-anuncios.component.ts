@@ -38,6 +38,7 @@ export class ListAnunciosComponent{
 
    ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
+
     this.service.listAll(this.lsUser.getCurrentUser(), true).subscribe({
       next: (prods) => {
         this.dataSource.data = prods;
@@ -59,7 +60,7 @@ export class ListAnunciosComponent{
   }
 
   applyFilter(text: string) {
-    this.dataSource.filter = text;
+    this.dataSource.filter = "Ativo";
   }
 
   openAnuncioPage(url: string) {
