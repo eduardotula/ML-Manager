@@ -1,5 +1,5 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Observable, forkJoin } from 'rxjs';
 import { AnuncioService } from 'src/app/services/anuncios.service';
 import { Anuncio } from 'src/app/services/models/Anuncio';
@@ -29,16 +29,27 @@ export class ListAnunciosComponent{
   errorMsg: string = "";
   displayedColumns: string[] = ['id', 'mlId', "sku", "descricao", "custo", "venda", "taxaMl", "frete", "lucro","status","calcular" ,"edit", "update", "delete"];
   anuncioImages: ImageModel<Anuncio> = new ImageModel();
+  filterForm: FormGroup;
 
   constructor(
     public service: AnuncioService,
     public lsUser: UserLSService,
     public router: Router, private imgService: ImageMLService,
-    private dialog: MatDialog) {}
+    private dialog: MatDialog,
+    formBuilder: FormBuilder,
+    ) {
+      this.dataSource.sort = this.sort;
+      this.dataSource.filterPredicate = this.customFilter;
+      this.filterForm = formBuilder.group({
+        descricao: '',
+        status: true,
+      });
+      this.filterForm.valueChanges.subscribe((value) => {
+        this.dataSource.filter = value;
+      });
+    }
 
    ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-
     this.service.listAll(this.lsUser.getCurrentUser(), true).subscribe({
       next: (prods) => {
         this.dataSource.data = prods;
@@ -53,20 +64,18 @@ export class ListAnunciosComponent{
               }
             });
           }
-        })
+        });
       }, error: (error) => this.errorMsg = error.message
     });
-    
   }
 
-  applyFilter(text: string) {
-    this.dataSource.filter = "Ativo";
-  }
+  customFilter(data: Anuncio, filter: any): boolean {
+    const b = !filter.descricao || data.descricao.toLowerCase().includes(filter.descricao.toLowerCase());
+    const s = !filter.status || data.status == "active" ? true : false;
 
-  openAnuncioPage(url: string) {
-    window.open(url);
+    return b && s;
   }
-
+  
   clickEdit(anuncio: Anuncio) {
     this.router.navigate(["/cadastrar-anuncio"], {
       queryParams: {
