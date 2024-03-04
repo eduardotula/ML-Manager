@@ -27,7 +27,7 @@ export class ListAnunciosComponent{
   dataSource = new MatTableDataSource<Anuncio>([]);
   loading: boolean = true;
   errorMsg: string = "";
-  displayedColumns: string[] = ['id', 'mlId', "sku", "descricao", "custo", "venda", "taxaMl", "frete", "lucro","status","calcular" ,"edit", "update", "delete"];
+  displayedColumns: string[] = ['id', 'mlId',"descricao", "custo", "venda", "taxaMl", "frete", "lucro","status","calcular" ,"edit", "update", "delete"];
   anuncioImages: ImageModel<Anuncio> = new ImageModel();
   filterForm: FormGroup;
 
@@ -38,22 +38,23 @@ export class ListAnunciosComponent{
     private dialog: MatDialog,
     formBuilder: FormBuilder,
     ) {
-      this.dataSource.sort = this.sort;
       this.dataSource.filterPredicate = this.customFilter;
       this.filterForm = formBuilder.group({
         descricao: '',
         status: true,
       });
+      this.dataSource.filter = this.filterForm as unknown as string;
       this.filterForm.valueChanges.subscribe((value) => {
         this.dataSource.filter = value;
       });
     }
 
    ngAfterViewInit(): void {
+
     this.service.listAll(this.lsUser.getCurrentUser(), true).subscribe({
       next: (prods) => {
         this.dataSource.data = prods;
-        this.table.renderRows();
+        this.dataSource.sort = this.sort;
         this.loading = false;
         
         this.dataSource.data.forEach((anuncio) =>{

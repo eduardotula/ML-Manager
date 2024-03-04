@@ -1,6 +1,8 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSort } from '@angular/material/sort';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, forkJoin } from 'rxjs';
 import { ImageModel } from 'src/app/default-components/default-table/image-model';
@@ -21,16 +23,27 @@ export class CadastrarAnuncioComponent implements OnInit {
   loading: boolean = true;
   containsRouteParams = false;
   productForm!: FormGroup;
-  mlAnuncios!: MercadoLivreAnuncio[];
+  filterForm!: FormGroup;
   name: any;
   errorMsg: string = "";
   @ViewChild('anuncioDialog', { static: true })
   anunciosDialog!: TemplateRef<any>;
   anuncioImages: ImageModel<MercadoLivreAnuncio> = new ImageModel();
+  dataSource = new MatTableDataSource<MercadoLivreAnuncio>([]);
+  @ViewChild('tables') table!: MatTable<MercadoLivreAnuncio>;
+  @ViewChild(MatSort) sort!: MatSort;
+  displayedColumns = ["img","id", "title", "status"];
 
   constructor(private formBuilder: FormBuilder, public service: AnuncioService, public lsUser: UserLSService,
     public route: ActivatedRoute, public router: Router, private mlService: MercadoLivreService, private dialog: MatDialog,
     private mlImageService: ImageMLService) {
+    
+    this.filterForm = this.formBuilder.group({
+      id: "",
+      descricao: "",
+      status: true
+    });
+    this.dataSource.filter = this.filterForm  as unknown as string;
 
     this.route.queryParams.subscribe(params =>{
       this.productForm = this.formBuilder.group({
@@ -45,9 +58,13 @@ export class CadastrarAnuncioComponent implements OnInit {
       if(this.productForm.valid){
         this.containsRouteParams = true;
       }
-    });
-  }
 
+      this.filterForm.valueChanges.subscribe((value) => {
+        this.dataSource.filter = value;
+      });
+    });
+    this.dataSource.filterPredicate = this.customFilter;
+  }
 
   ngOnInit() {
     this.resetPageState();
@@ -61,6 +78,7 @@ export class CadastrarAnuncioComponent implements OnInit {
             var filtered = mlIds.filter(mlId => !registeredIds.has(mlId));
 
             this.setMercadoLivreAnuncios(filtered);
+            
           }
         });
 
@@ -75,10 +93,17 @@ export class CadastrarAnuncioComponent implements OnInit {
     }
   }
 
+  customFilter(data: MercadoLivreAnuncio, filter: any): boolean {
+    const a = !filter.id || data.id.toLowerCase() == filter.id.toLowerCase();
+    const b = !filter.descricao || data.title.toLowerCase().includes(filter.descricao.toLowerCase());
+    const s = !filter.status || data.status == "active" ? true : false;
+    return a && b && s;
+  }
+  
   openBuscarDialog(){
     //Correção de top bar
     this.dialog.open(this.anunciosDialog, {
-      width: "70vw",
+      width: "150vh",
       position: {top: "20vh"}
     });
   }
@@ -108,8 +133,9 @@ export class CadastrarAnuncioComponent implements OnInit {
     ids.forEach(id => anuncioObser.push(this.mlService.getAnuncioByMlId(id)))
     forkJoin(anuncioObser).subscribe({
       next: (mercadoLivreAnuncio) =>{
-        this.mlAnuncios = mercadoLivreAnuncio;
-
+        this.dataSource.data = mercadoLivreAnuncio;
+        this.dataSource.sort = this.sort;
+        
         mercadoLivreAnuncio.forEach(mlanuncio =>{
           if(mlanuncio.pictures.length > 0){
             this.mlImageService.getImage(mlanuncio.pictures[0].url).subscribe({
@@ -179,7 +205,7 @@ export class CadastrarAnuncioComponent implements OnInit {
   createAnuncio(anuncioSimple: AnuncioSimple){
     this.service.createAnuncioSearch(anuncioSimple, this.lsUser.getCurrentUser()).subscribe({
       next: () => {
-        this.mlAnuncios = this.mlAnuncios.filter(anuncio => anuncio.id != anuncioSimple.mlId);
+        this.dataSource.data = this.dataSource.data.filter(anuncio => anuncio.id != anuncioSimple.mlId);
         this.resetPageState();
         this.resetForm();
       },
