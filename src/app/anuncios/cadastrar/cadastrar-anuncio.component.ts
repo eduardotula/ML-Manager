@@ -182,10 +182,10 @@ export class CadastrarAnuncioComponent implements OnInit {
     }
   }
 
-  onTableClick(mlId: string ){
+  onTableClick(mlId: MercadoLivreAnuncio ){
     this.dialog.closeAll();
     this.loading = true;
-    this.service.getAnuncioByMlIdSearch(mlId, this.lsUser.getCurrentUser()).subscribe({next: (prod) => {
+    this.service.getAnuncioByMlIdSearch(mlId.id, this.lsUser.getCurrentUser()).subscribe({next: (prod) => {
       this.productForm.patchValue({
         descricao: prod.descricao,
         sku: prod.sku,
