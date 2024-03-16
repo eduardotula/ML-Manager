@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Searchable } from './Searchable';
 
 @Injectable({
     providedIn: 'root',
@@ -15,6 +13,11 @@ export class ImageModel<T> {
 
     getImage(identifier: T): string | undefined{
         return this.anuncioImgsMap.get(identifier);
+    }
+
+    replaceImage(oldIdentifier: T, newIdentifier: T, newImage: string){
+        this.anuncioImgsMap.delete(oldIdentifier);
+        this.anuncioImgsMap.set(newIdentifier, newImage);
     }
 
     private createImageFromBlob(image: Blob): string {

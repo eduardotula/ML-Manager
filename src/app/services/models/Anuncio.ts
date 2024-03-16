@@ -1,8 +1,7 @@
-import { Searchable } from "src/app/default-components/default-table/Searchable";
 import { Url } from "./Url";
 import { Venda } from "./Venda";
 
-export class Anuncio implements Searchable{
+export class Anuncio{
     public id: number;
     public mlId: string;
     public sku: string;
@@ -23,7 +22,6 @@ export class Anuncio implements Searchable{
     public complete: boolean;
     public pictures: Url[];
     public vendas: Venda[];
-    searchField: string;
 
     // Constructor
     constructor(
@@ -68,7 +66,31 @@ export class Anuncio implements Searchable{
         this.vendas = vendas;
         this.listingType = listingType;
         this.imposto = imposto;
-        //Utilizado para busca
-        this.searchField = descricao;
+    }
+
+    static setValuesWithAnuncio(
+        oldAnuncio: Anuncio,
+        anuncio: Anuncio
+    ) {
+        oldAnuncio.id = anuncio.id;
+        oldAnuncio.mlId = anuncio.mlId;
+        oldAnuncio.sku = anuncio.sku;
+        oldAnuncio.gtin = anuncio.gtin;
+        oldAnuncio.url = anuncio.url;
+        oldAnuncio.descricao = anuncio.descricao;
+        oldAnuncio.categoria = anuncio.categoria;
+        oldAnuncio.custo = anuncio.custo;
+        oldAnuncio.csosn = anuncio.csosn;
+        oldAnuncio.precoDesconto = anuncio.precoDesconto;
+        oldAnuncio.taxaML = anuncio.taxaML;
+        oldAnuncio.custoFrete = anuncio.custoFrete;
+        oldAnuncio.status = anuncio.status;
+        oldAnuncio.createdAt = anuncio.createdAt;
+        oldAnuncio.lucro = anuncio.lucro;
+        oldAnuncio.complete = anuncio.complete;
+        oldAnuncio.pictures = anuncio.pictures;
+        oldAnuncio.vendas = anuncio.vendas;
+        oldAnuncio.listingType = anuncio.listingType;
+        oldAnuncio.imposto = anuncio.imposto;
     }
 }

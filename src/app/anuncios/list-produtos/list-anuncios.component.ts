@@ -53,20 +53,21 @@ export class ListAnunciosComponent{
 
     this.service.listAll(this.lsUser.getCurrentUser(), true).subscribe({
       next: (prods) => {
-        this.dataSource.data = prods;
-        this.dataSource.sort = this.sort;
-        this.loading = false;
-        
-        this.dataSource.data.forEach((anuncio) =>{
-          if(anuncio.pictures.length > 0){
-            this.imgService.getImage(anuncio.pictures[0].url).subscribe({
-              next: (imgBlob) =>{
-                this.anuncioImages.addImage(anuncio, imgBlob);
-              }
-            });
-          }
-        });
+        this.refreshAnuncioData(prods);
       }, error: (error) => this.errorMsg = error.message
+    });
+  }
+  refreshAnuncioData(newProds: Anuncio[]) {
+    this.dataSource.data = newProds;
+    this.dataSource.sort = this.sort;
+    this.loading = false;
+    this.anuncioImages.anuncioImgsMap.clear();
+    this.dataSource.data.forEach((anuncio) =>{
+      if(anuncio.pictures.length > 0){
+        this.imgService.getImage(anuncio.pictures[0].url).subscribe({
+          next: (imgBlob) => this.anuncioImages.addImage(anuncio, imgBlob)
+        });
+      }
     });
   }
 
@@ -97,7 +98,14 @@ export class ListAnunciosComponent{
 
   clickUpdate(anuncio: Anuncio) {
     this.service.updateAnuncioSearchByMlId(anuncio.mlId, this.lsUser.getCurrentUser()).subscribe({
-      next: () => window.location.reload(),
+      next: (anuncio) => {
+        var anuncioIndex = this.dataSource.data.findIndex((anun) => anun.id == anuncio.id);
+        if(anuncioIndex > -1){
+          var oldData = this.dataSource.data[anuncioIndex];
+          Anuncio.setValuesWithAnuncio(oldData, anuncio);
+          this.table.renderRows();
+        }
+      },
       error: (err) => this.errorMsg = err.message
     });
   }
@@ -122,7 +130,7 @@ export class ListAnunciosComponent{
 
     forkJoin(requests).subscribe(
       (results) => {
-        window.location.reload();
+        this.refreshAnuncioData(results);
       },
       (error) => {
         console.error('Error updating Anuncios:', error);
@@ -138,7 +146,6 @@ export class ListAnunciosComponent{
     var columns = [
       { name: 'mlId', width: 14 },
       { name: 'sku',  width: 20 },
-     // { name: 'gtin',  width: 13 },
       { name: 'url', width: 10 },
       { name: 'Descrição', width: 60 },
       { name: 'Categoria',  width: 12 },
