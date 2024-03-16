@@ -73,9 +73,10 @@ export class ListAnunciosComponent{
 
   customFilter(data: Anuncio, filter: any): boolean {
     const b = !filter.descricao || data.descricao.toLowerCase().includes(filter.descricao.toLowerCase());
+    const a = !filter.descricao || data.mlId.toLowerCase().includes(filter.descricao.toLowerCase());
     const s = !filter.status || data.status == "active" ? true : false;
 
-    return b && s;
+    return ((b || a) && s);
   }
   
   clickEdit(anuncio: Anuncio) {

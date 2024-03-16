@@ -94,8 +94,9 @@ export class CadastrarAnuncioComponent implements OnInit {
   }
 
   customFilter(data: MercadoLivreAnuncio, filter: any): boolean {
-    const a = !filter.id || data.id.toLowerCase() == filter.id.toLowerCase();
+    const a = !filter.id || data.id.toLowerCase().includes(filter.id.toLowerCase());
     const b = !filter.descricao || data.title.toLowerCase().includes(filter.descricao.toLowerCase());
+    
     const s = !filter.status || data.status == "active" ? true : false;
     return a && b && s;
   }
