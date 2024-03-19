@@ -29,7 +29,6 @@
         <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Produto</th>
         <td mat-cell *matCellDef="let venda" >{{venda.anuncio.descricao}}</td>
         <td mat-footer-cell *matFooterCellDef></td>
-
       </div>
     
           
@@ -37,7 +36,12 @@
         <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Quantidade</th>
         <td mat-cell *matCellDef="let venda" >{{venda.quantidade}}</td>
         <td mat-footer-cell *matFooterCellDef></td>
+      </div>
 
+      <div matColumnDef="quantidadeCancelado">
+        <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Devolução</th>
+        <td mat-cell *matCellDef="let venda" >{{venda.quantidadeCancelado}}</td>
+        <td mat-footer-cell *matFooterCellDef></td>
       </div>
     
       <div matColumnDef="somaCusto">

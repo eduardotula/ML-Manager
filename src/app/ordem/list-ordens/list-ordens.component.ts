@@ -44,7 +44,7 @@ export class ListOrdensComponent {
   ) {
     const currentDate = new Date();
     this.initialDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
-    this.finalDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())
+    this.finalDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59);
     this.anuncioImage = new ImageModel<Venda>();
   }
 

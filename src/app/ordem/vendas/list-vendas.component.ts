@@ -26,6 +26,7 @@ export class ListVendasComponent {
         "img",
         "descricao",
         "quantidade",
+        "quantidadeCancelado",
         "somaVenda",
       'somaLucro'
     ];
@@ -38,8 +39,8 @@ export class ListVendasComponent {
 
     constructor(private anuncioService: AnuncioService, private orderService: OrderService, private userLsService: UserLSService, private imgService: ImageMLService) {
         const currentDate = new Date();
-        this.initialDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
-        this.finalDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())
+        this.initialDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        this.finalDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59);
      }
 
      ngOnInit(): void {
@@ -50,26 +51,40 @@ export class ListVendasComponent {
         this.loading = true;
         this.anuncioService.listAll(this.userLsService.getCurrentUser(), true).subscribe({
             next: (anuncios) => {
-
+                
                 const requests: Observable<Venda[]>[] = [];
-                let listVenda: ListVendas[] = [];
                 anuncios.forEach((anuncio) => {
                     requests.push(from(this.listAllVendasByFilters(anuncio.id, "ASC", dataInicial, dataFinal)));
-                    listVenda.push(new ListVendas(anuncio, []));
-                    
                     if(anuncio.pictures.length > 0){
                         this.imgService.getImage(anuncio.pictures[0].url).subscribe((imgBlob) => this.anuncioImg.addImage(anuncio, imgBlob));
                     }
-                })
-                this.dataSource.sort = this.sort;
-                this.dataSource.data = listVenda;
-                this.table.renderRows();
+                });
+                
                 this.loading = false;
-                this.observeVendas(requests);
+                forkJoin(requests).subscribe({
+                    next: (resultsVendas) => {
+                        this.loading = true;
+        
+                        var tempDataSource: ListVendas[] = [];
+                        resultsVendas.forEach(vendas => {
+                            if(vendas.length > 0){
+                                var anuncio: Anuncio[] = anuncios.filter(listVendas => listVendas.id == vendas[0].anuncio.id)
+                                if (anuncio.length > 0) {
+                                    var tableAnuncio: ListVendas = new ListVendas(anuncio[0], vendas);
+                                    tableAnuncio.sumValues();
+                                    tempDataSource.push(tableAnuncio);
+                                }
+                            }
+                        })
+                        this.dataSource.sort = this.sort;
+                        this.dataSource.data = tempDataSource;
+                        this.table.renderRows();
+                        this.loading = false;
+                    },
+                    error: (error) => this.handleError(error)
+                })
             },
-            error: (error) => {
-                this.handleError(error);
-            }
+            error: (error) => this.handleError(error)
         })
     }
 
@@ -80,7 +95,7 @@ export class ListVendasComponent {
         var vendas: Venda[] = [];
 
         while (page < totalPages) {
-            var response = await this.orderService.listVendasByFilters(page, anuncioId, sortType, dataInicial, dataFinal, false).toPromise();
+            var response = await this.orderService.listVendasByFilters(page, anuncioId, sortType, dataInicial, dataFinal, true).toPromise();
             if (!response) throw Error("Falha ao buscar vendas");
 
             response.results.forEach((v) => vendas.push(v))
@@ -91,25 +106,8 @@ export class ListVendasComponent {
         return vendas;
     }
 
-    observeVendas(requests: Observable<Venda[]>[]) {
-        forkJoin(requests).subscribe({
-            next: (resultsVendas) => {
-                this.loading = true;
-                resultsVendas.forEach(vendas => {
-                    if(vendas.length > 0){
-                        var anuncios = this.dataSource.data.filter(listVendas => listVendas.anuncio.id == vendas[0].anuncio.id)
-                        if (anuncios.length > 0) {
-                            anuncios[0].vendas = vendas;
-                            anuncios[0].sumValues();
-                        }
-                    }
-                })
-                this.loading = false;
-            },
-            error: (error) => {
-                this.handleError(error);
-            }
-        })
+    observeVendas(requests: Observable<Venda[]>[], allAnuncios: Anuncio[]) {
+
     }
 
     onSubmitDate(datas: FilterDateData){
