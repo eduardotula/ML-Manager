@@ -111,11 +111,11 @@ export class ListAnunciosComponent{
     });
   }
 
-  openBuscarDialog(anuncio: Anuncio){
+  openBuscarDialog(anuncio: Anuncio | null, isExistingAnuncio: boolean){
     //Correção de top bar
     this.dialog.open(this.calcularDialog, {
       width: "40vw",
-      data:{anuncio: anuncio},
+      data:{anuncio: anuncio, isExistingAnuncio: isExistingAnuncio},
       position: {top: "20vh"}
     });
   }

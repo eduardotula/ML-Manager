@@ -3,6 +3,7 @@ export class AnuncioSimulation {
     valorVenda: number;
     custo: number;
     custoFrete: number;
+    equivalentMlId: string;
     csosn: string;
     tipoAnuncio: string;
 
@@ -12,8 +13,10 @@ export class AnuncioSimulation {
         custo: number,
         custoFrete: number,
         csosn: string,
+        equivalentMlId: string,
         tipoAnuncio: string,
     ) {
+        this.equivalentMlId = equivalentMlId;
         this.categoria = categoria;
         this.valorVenda = valorVenda;
         this.custo = custo;

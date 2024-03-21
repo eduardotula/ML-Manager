@@ -86,6 +86,7 @@ export class AnuncioService extends CommonService{
       "custo-frete": anuncioSimulation.custoFrete,
       "csosn": anuncioSimulation.csosn,
       "tipo-anuncio": anuncioSimulation.tipoAnuncio,
+      "equivalent-mlId": anuncioSimulation.equivalentMlId,
       "user-id": userId,
     };
     return this.http.get<any>(this.url + `simulation`, {params}).pipe(catchError(this.handleError));
