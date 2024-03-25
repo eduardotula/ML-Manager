@@ -60,11 +60,8 @@ export class ListVendasComponent {
                     }
                 });
                 
-                this.loading = false;
                 forkJoin(requests).subscribe({
-                    next: (resultsVendas) => {
-                        this.loading = true;
-        
+                    next: (resultsVendas) => {        
                         var tempDataSource: ListVendas[] = [];
                         resultsVendas.forEach(vendas => {
                             if(vendas.length > 0){

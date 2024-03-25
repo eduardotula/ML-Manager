@@ -11,6 +11,7 @@ import { UserLSService } from 'src/app/services/local-storage/user-ls.service';
 import { ImageMLService } from 'src/app/services/image-ml.service';
 import { ImageModel } from 'src/app/default-components/default-table/image-model';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmBoxEvokeService } from '@costlydeveloper/ngx-awesome-popup';
 
 @Component({
   selector: 'app-list-anuncios',
@@ -36,6 +37,7 @@ export class ListAnunciosComponent{
     public lsUser: UserLSService,
     public router: Router, private imgService: ImageMLService,
     private dialog: MatDialog,
+    private confirmBoxEvokeService: ConfirmBoxEvokeService,
     formBuilder: FormBuilder,
     ) {
       this.dataSource.filterPredicate = this.customFilter;
@@ -90,10 +92,13 @@ export class ListAnunciosComponent{
   }
 
   clickDelete(anuncio: Anuncio) {
-    this.service.deleteById(anuncio.id).subscribe({
-      next: () => window.location.reload(),
-      error: (err) => this.errorMsg = err.message
-
+    this.confirmBoxEvokeService.warning("Apagar:","Deseja apagar o anuncio?", "Confirmar", "Cancelar").subscribe(resp =>{
+      if(resp.success){
+        this.service.deleteById(anuncio.id).subscribe({
+          next: () => window.location.reload(),
+          error: (err) => this.errorMsg = err.message
+        });
+      }
     });
   }
 
@@ -114,7 +119,7 @@ export class ListAnunciosComponent{
   openBuscarDialog(anuncio: Anuncio | null, isExistingAnuncio: boolean){
     //Correção de top bar
     this.dialog.open(this.calcularDialog, {
-      width: "40vw",
+      width: "540px",
       data:{anuncio: anuncio, isExistingAnuncio: isExistingAnuncio},
       position: {top: "20vh"}
     });

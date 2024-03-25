@@ -31,7 +31,8 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/datatables.net-dt/css/jquery.dataTables.min.css"
+              "node_modules/datatables.net-dt/css/jquery.dataTables.min.css",
+              "node_modules/@costlydeveloper/ngx-awesome-popup/styles/theme.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

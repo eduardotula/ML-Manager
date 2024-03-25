@@ -53,7 +53,7 @@ export class CadastrarAnuncioComponent implements OnInit {
         descricao: [params['descricao']],
         sku: [params['sku']],
       })
-      if(params['mlId']) this.onTableClick(params["mlId"]);
+      if(params['mlId']) this.onTableClick({id: params["mlId"]} as MercadoLivreAnuncio);
 
       if(this.productForm.valid){
         this.containsRouteParams = true;
@@ -130,7 +130,6 @@ export class CadastrarAnuncioComponent implements OnInit {
 
   setMercadoLivreAnuncios(ids: string[]){
     var anuncioObser: Observable<MercadoLivreAnuncio>[] = [];
-
     ids.forEach(id => anuncioObser.push(this.mlService.getAnuncioByMlId(id)))
     forkJoin(anuncioObser).subscribe({
       next: (mercadoLivreAnuncio) =>{
@@ -138,7 +137,8 @@ export class CadastrarAnuncioComponent implements OnInit {
         this.dataSource.sort = this.sort;
         
         mercadoLivreAnuncio.forEach(mlanuncio =>{
-          if(mlanuncio.pictures.length > 0){
+
+          if(mlanuncio.pictures && mlanuncio.pictures.length > 0){
             this.mlImageService.getImage(mlanuncio.pictures[0].url).subscribe({
               next: (imgBlob) => {
                 this.anuncioImages.addImage(mlanuncio, imgBlob);

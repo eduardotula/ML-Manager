@@ -15,16 +15,18 @@
 
 <div class="container limit-content card">
   <ngx-loading [show]="loading"></ngx-loading>
-
-  
-  <form class="bg-body-tertiary card stick-top" [formGroup]="filterForm" style="margin-top: 20px;">
-        <div class="row me-auto mb-2 mb-lg-0">
-          <div class="col-auto d-flex align-self-center" role="search"  style="margin: 5px">
-            <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" formControlName="descricao">
+  <div class="bg-body-tertiary card stick-top" [formGroup]="filterForm" style="margin-top: 20px;">
+    <div class="row justify-content-between">
+      <div class="col-auto">
+        <div class="row">
+          <div class="col-auto d-flex align-self-center" role="search" style="margin: 5px">
+            <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search"
+              formControlName="descricao">
           </div>
           <div class="col-auto form-check form-switch align-self-center">
             <label class="form-check-label" for="flexSwitchCheckDefault">Somente ativos</label>
-            <input class="form-check-input"  type="checkbox" role="switch" id="flexSwitchCheckDefault" formControlName="status">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"
+              formControlName="status">
           </div>
           <div class="col-auto align-self-center">
             <div ngbDropdown class="dropdown">
@@ -35,10 +37,14 @@
               </div>
             </div>
           </div>
-            <div><img class="hover-icon" (click)="openBuscarDialog(null, true)"
-              src="../../../assets/calculator.svg" width="16" height="16"></div>
-          </div>
-  </form>
+        </div>
+      </div>
+      <div class="col-auto align-self-center me-3"> 
+        <img class="hover-icon" (click)="openBuscarDialog(null, false)"
+        src="../../../assets/calculator.svg" width="24" height="24">
+      </div>
+    </div>
+  </div>
 
   <table #tables mat-table [dataSource]="dataSource" class="table caption-top table-striped table-hover" matSort>
 

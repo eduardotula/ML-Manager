@@ -9,7 +9,7 @@
             <div class="row" style="margin-top: 10px;">
                 <div class="col-md-6">
                     <label class="form-label" >Valor do Anuncio</label>
-                    <input type="number" class="form-control" name="precoDesconto" [value]="getPrecoDesconto | currency:'BRL'"  formControlName="precoDesconto">
+                    <input type="number" class="form-control" name="precoDesconto" formControlName="precoDesconto">
                 </div>
                 <div *ngIf="!isExistingAnuncio" class="col-md-6" >
                     <label class="form-label" >ID de mesmo produto</label>
@@ -18,11 +18,18 @@
             </div>
 
             <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                
                 <div class="col-md-6">
                     <label class="form-label" >Lucro</label>
                     <input type="text" name="lucro" [value]="lucro | currency : 'BRL'" class="form-control disabled-input" readonly>
                 </div>
-
+                <div class="col-md-6">
+                    <label class="form-label" for="csosn">Tipo</label>
+                    <select class="form-select" formControlName="tipoAnuncio">
+                    <option value="classico">Classico</option>
+                    <option value="premium">Premium</option>
+                    </select>
+                </div>
             </div>
 
             <div class="row" style="margin-bottom: 10px;">
@@ -40,7 +47,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label class="form-label" >Custo da Mercadoria</label>
-                        <input type="text"  class="form-control" [value]="getCusto | currency:'BRL'" formControlName="custo">
+                        <input type="number"  class="form-control" formControlName="custo">
                     </div>
                 </div>
 

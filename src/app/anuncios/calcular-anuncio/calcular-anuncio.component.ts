@@ -14,7 +14,7 @@ import { AnuncioSimulation } from 'src/app/services/models/AnuncioSimulation';
 export class CalcularAnuncioComponent implements OnInit {
 
     lucro: number = 0; 
-    anuncio!: Anuncio;
+    anuncio: Anuncio;
 
     isExistingAnuncio: boolean;
     consultaForm: FormGroup;
@@ -26,22 +26,24 @@ export class CalcularAnuncioComponent implements OnInit {
         private formBuilder: FormBuilder,
         @Inject(MAT_DIALOG_DATA) public data: any, private anuncioService: AnuncioService,
         private lsUserService: UserLSService) {
-            var anuncio: Anuncio = data.anuncio;
-            this.anuncio = anuncio;
+            if(data.anuncio){
+                this.anuncio = data.anuncio;
+            }else this.anuncio = new Anuncio(0,"","","","", "", "", 0, "102",0,0,0,"",new Date(),0,false,[], [], 0,"classico");
             this.isExistingAnuncio = data.isExistingAnuncio;
 
-            this.lucro = anuncio.lucro;
+            this.lucro = this.anuncio.lucro;
             this.consultaForm = this.formBuilder.group({
-                precoDesconto: [anuncio.precoDesconto, Validators.required],
-                custo: [anuncio.custo, Validators.required],
-                csosn: [anuncio.csosn, Validators.required],
-                imposto: [anuncio.imposto],
-                taxaML: [anuncio.taxaML, Validators.required],
-                frete: [anuncio.custoFrete, Validators.required],
+                precoDesconto: [this.anuncio.precoDesconto, Validators.required],
+                custo: [this.anuncio.custo, Validators.required],
+                csosn: [this.anuncio.csosn, Validators.required],
+                taxaML: [this.anuncio.taxaML, Validators.required],
+                imposto: [this.anuncio.imposto],
+                frete: [this.anuncio.custoFrete, Validators.required],
+                tipoAnuncio: [this.anuncio.listingType,Validators.required],
                 equivalentMlId:[""]
               });
             if(!this.isExistingAnuncio){
-                this.consultaForm.addControl("equivalentMlId", Validators.required);
+                this.consultaForm.addControl("equivalentMlId", [Validators.required]);
             } 
          }
 
@@ -68,24 +70,36 @@ export class CalcularAnuncioComponent implements OnInit {
         return this.consultaForm.get("taxaML")!.value;
       } 
 
-    calculateLucro(){
+    async calculateLucro(){
         this.loading = true;
         if(this.consultaForm.valid){
+
+            var useId = this.lsUserService.getCurrentUser();
+            if(!this.isExistingAnuncio){
+                var response = await this.anuncioService.getAnuncioByMlIdSearch(this.consultaForm.get("equivalentMlId")!.value,
+                 this.lsUserService.getCurrentUser()).toPromise();
+                 if (!response) {
+                    this.loading = false;
+                    throw Error("Falha ao buscar Anuncio");
+                }
+                 this.anuncio.categoria = response.categoria;
+            }
+            
             var anuncioSimulation = new AnuncioSimulation(this.anuncio.categoria,
                 this.consultaForm.get("precoDesconto")!.value, this.consultaForm.get("custo")!.value, this.consultaForm.get("frete")!.value, 
-                this.consultaForm.get("csosn")!.value, this.consultaForm.get("equivalentMlId")!.value, this.anuncio.listingType);
-           this.anuncioService.simulateAnuncio(anuncioSimulation, this.lsUserService.getCurrentUser()).subscribe({
+                this.consultaForm.get("csosn")!.value, this.consultaForm.get("equivalentMlId")!.value, this.consultaForm.get("tipoAnuncio")!.value);
+           this.anuncioService.simulateAnuncio(anuncioSimulation, useId).subscribe({
                next: (response) =>{
                    this.lucro = response.lucro;
-                   this.consultaForm.setValue({
+                   this.consultaForm.patchValue({
                         precoDesconto: this.consultaForm.get("precoDesconto")!.value,
                        custo: response.custo,
                        csosn: response.csosn,
                        imposto: response.imposto,
                        taxaML: response.taxaMl,
                        frete: response.frete,
-                       equivalentMlId: this.consultaForm.get("equivalentMlId")!.value
                    });
+
                    this.loading = false;
                }, error: (error) => {
                    this.loading = false;

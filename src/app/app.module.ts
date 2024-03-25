@@ -10,7 +10,7 @@ import { CadastrarAnuncioComponent } from './anuncios/cadastrar/cadastrar-anunci
 import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
 import { ListOrdensComponent } from './ordem/list-ordens/list-ordens.component';
 import { ListAnunciosComponent } from './anuncios/list-produtos/list-anuncios.component';
-import { MatTableModule} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,7 +24,18 @@ import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { MercadoLivreService } from './services/mercado-livre.service';
 import { MatDialogModule } from '@angular/material/dialog';
+import {
+    NgxAwesomePopupModule,
+    DialogConfigModule,
+    ConfirmBoxConfigModule,
+    ToastNotificationConfigModule,
+    DisappearanceAnimation,
+    AppearanceAnimation,
+    IToastCoreConfig,
+    ConfirmBoxInitializer
+} from '@costlydeveloper/ngx-awesome-popup';
 import { CalcularAnuncioComponent } from './anuncios/calcular-anuncio/calcular-anuncio.component';
+import { animation } from '@angular/animations';
 
 registerLocaleData(localePt);
 
@@ -45,7 +56,7 @@ registerLocaleData(localePt);
         MercadoLivreService,
         DateToStringPipe,
         { provide: LOCALE_ID, useValue: 'pt-BR' },
-        {   provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter},],
+        { provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter },],
     bootstrap: [AppComponent],
     imports: [
         BrowserModule,
@@ -55,17 +66,21 @@ registerLocaleData(localePt);
         ReactiveFormsModule,
         FormsModule,
         MatDialogModule,
+        NgxAwesomePopupModule.forRoot(),
+        DialogConfigModule.forRoot(),
+            ConfirmBoxConfigModule.forRoot({confirmBoxCoreConfig: {animationIn: AppearanceAnimation.NONE, animationOut: DisappearanceAnimation.NONE}}),
+        ToastNotificationConfigModule.forRoot(), 
         NgxLoadingModule.forRoot({
             animationType: ngxLoadingAnimationTypes.rectangleBounce,
             backdropBackgroundColour: 'rgba(0,0,0,0)',
             backdropBorderRadius: '4px',
             primaryColour: '#8a2be2'
-          }),
+        }),
         MatTableModule,
         MatSortModule,
         BrowserAnimationsModule,
         MatExpansionModule,
-        
+
     ]
 })
 export class AppModule { }

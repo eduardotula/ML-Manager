@@ -57,6 +57,10 @@
 
   <ng-template class="container-sm dialog" #anuncioDialog  >
     <h2 matDialogTitle>Anuncios</h2>
+    
+    <div>
+      <ngx-loading [show]="loading"></ngx-loading>
+    </div>
     <mat-dialog-content class="card">
       <div>
         <form class="card stick-top" [formGroup]="filterForm">
