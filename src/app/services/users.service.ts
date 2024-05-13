@@ -9,7 +9,7 @@ import { HttpClient } from "@angular/common/http";
   })
   export class UsersServices extends CommonService{
 
-    url: string = 'http://localhost:8080/users/'
+    url: string = 'https://ml-manager-back-b72bf0edf6c1.herokuapp.com/users/'
     
 
     getAll(): Observable<User[]>{

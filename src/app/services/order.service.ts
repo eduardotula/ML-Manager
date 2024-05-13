@@ -10,7 +10,7 @@ import { Venda } from "./models/Venda";
   })
   export class OrderService extends CommonService{
 
-    url: string = 'http://localhost:8080/orders/'
+    url: string = 'https://ml-manager-back-b72bf0edf6c1.herokuapp.com/orders/'
 
     listByFilters(page: number, userId: number, sortType: string, dataInicial: Date | null, dataFinal: Date | null, 
       filters?: {

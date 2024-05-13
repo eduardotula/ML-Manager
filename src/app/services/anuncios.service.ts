@@ -12,7 +12,7 @@ import { AnuncioSimulation } from './models/AnuncioSimulation';
 })
 export class AnuncioService extends CommonService{
 
-  url: string = 'http://localhost:8080/anuncios/'
+  url: string = 'https://ml-manager-back-b72bf0edf6c1.herokuapp.com/anuncios/'
 
 
   listAllAnunciosMercadoLivre(userId: number, includePaused: boolean): Observable<string[]>{
