@@ -88,6 +88,7 @@ export class AnuncioService extends CommonService{
       "tipo-anuncio": anuncioSimulation.tipoAnuncio,
       "equivalent-mlId": anuncioSimulation.equivalentMlId,
       "user-id": userId,
+      "mlId": anuncioSimulation.mlId,
     };
     return this.http.get<any>(this.url + `simulation`, {params}).pipe(catchError(this.handleError));
   } 

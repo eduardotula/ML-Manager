@@ -85,7 +85,7 @@ export class CalcularAnuncioComponent implements OnInit {
                  this.anuncio.categoria = response.categoria;
             }
             
-            var anuncioSimulation = new AnuncioSimulation(this.anuncio.categoria,
+            var anuncioSimulation = new AnuncioSimulation(this.anuncio.categoria, this.anuncio.mlId,
                 this.consultaForm.get("precoDesconto")!.value, this.consultaForm.get("custo")!.value, this.consultaForm.get("frete")!.value, 
                 this.consultaForm.get("csosn")!.value, this.consultaForm.get("equivalentMlId")!.value, this.consultaForm.get("tipoAnuncio")!.value);
            this.anuncioService.simulateAnuncio(anuncioSimulation, useId).subscribe({

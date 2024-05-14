@@ -1,5 +1,6 @@
 export class AnuncioSimulation {
     categoria: string;
+    mlId: string;
     valorVenda: number;
     custo: number;
     custoFrete: number;
@@ -9,6 +10,7 @@ export class AnuncioSimulation {
 
     constructor(
         categoria: string,
+        mlId: string,
         valorVenda: number,
         custo: number,
         custoFrete: number,
@@ -17,6 +19,7 @@ export class AnuncioSimulation {
         tipoAnuncio: string,
     ) {
         this.equivalentMlId = equivalentMlId;
+        this.mlId = mlId;
         this.categoria = categoria;
         this.valorVenda = valorVenda;
         this.custo = custo;
