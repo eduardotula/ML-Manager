@@ -5,14 +5,15 @@ import { CommonService } from './common.service';
 import { Anuncio } from './models/Anuncio';
 import { AnuncioSimple } from './models/AnuncioSimple';
 import { AnuncioSimulation } from './models/AnuncioSimulation';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AnuncioService extends CommonService{
-
-  url: string = 'https://ml-manager-back-b72bf0edf6c1.herokuapp.com/anuncios/'
+  
+  url: string = environment.apiUrl + '/anuncios/'
 
 
   listAllAnunciosMercadoLivre(userId: number, includePaused: boolean): Observable<string[]>{

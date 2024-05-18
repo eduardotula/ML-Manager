@@ -3,13 +3,14 @@ import { CommonService } from "./common.service";
 import { Observable, catchError } from "rxjs";
 import { User } from "./models/User";
 import { HttpClient } from "@angular/common/http";
+import { environment } from "src/environments/environment";
 
 @Injectable({
     providedIn: 'root'
   })
   export class UsersServices extends CommonService{
 
-    url: string = 'https://ml-manager-back-b72bf0edf6c1.herokuapp.com/users/'
+    url: string = environment.apiUrl +'/users/';
     
 
     getAll(): Observable<User[]>{

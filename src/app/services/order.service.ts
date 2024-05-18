@@ -4,13 +4,14 @@ import { Observable, catchError } from "rxjs";
 import { Order } from "./models/Order";
 import { PaginationResponse } from "./models/PaginationResponse";
 import { Venda } from "./models/Venda";
+import { environment } from "src/environments/environment";
 
 @Injectable({
     providedIn: 'root'
   })
   export class OrderService extends CommonService{
 
-    url: string = 'https://ml-manager-back-b72bf0edf6c1.herokuapp.com/orders/'
+    url: string = environment.apiUrl +'/orders/'
 
     listByFilters(page: number, userId: number, sortType: string, dataInicial: Date | null, dataFinal: Date | null, 
       filters?: {
