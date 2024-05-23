@@ -59,7 +59,16 @@
 
     <ng-container matColumnDef="mlId">
       <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>MLID</th>
-      <td mat-cell *matCellDef="let anuncio">{{ anuncio.mlId }}</td>
+      <td  mat-cell *matCellDef="let anuncio">
+        <div class="d-flex flex-column"> 
+          <div>{{ anuncio.mlId }}</div>
+          <div>
+            <img *ngIf="anuncio.isFulfillment" src="../../../assets/full.png" width="35" height="20" style="margin-right: 5px;">
+            <img *ngIf="anuncio.catalogListing" src="../../../assets/catalogo.png" width="60" height="20">
+          </div>
+        </div>
+
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="descricao">

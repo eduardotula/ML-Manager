@@ -25,6 +25,13 @@
         <td mat-footer-cell *matFooterCellDef> </td>
       </ng-container>
 
+      
+      <div matColumnDef="ml-id">
+        <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Produto</th>
+        <td mat-cell *matCellDef="let venda" >{{venda.anuncio.mlId}}</td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </div>
+
       <div matColumnDef="descricao">
         <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Produto</th>
         <td mat-cell *matCellDef="let venda" >{{venda.anuncio.descricao}}</td>

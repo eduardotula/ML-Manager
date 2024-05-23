@@ -24,6 +24,7 @@ export class ListVendasComponent {
     @ViewChild(MatSort) sort!: MatSort;
     displayedColumns: string[] = [
         "img",
+        "ml-id",
         "descricao",
         "quantidade",
         "quantidadeCancelado",

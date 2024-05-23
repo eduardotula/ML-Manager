@@ -22,6 +22,8 @@ export class Anuncio{
     public complete: boolean;
     public pictures: Url[];
     public vendas: Venda[];
+    public isFulfillment: boolean;
+    public catalogListing: boolean;
 
     // Constructor
     constructor(
@@ -44,7 +46,10 @@ export class Anuncio{
         pictures: Url[],
         vendas: Venda[],
         imposto: number,
-        listingType: string
+        listingType: string,
+        isFulfillment: boolean = false,
+        catalogListing: boolean = false,
+
     ) {
         this.id = id;
         this.mlId = mlId;
@@ -66,6 +71,8 @@ export class Anuncio{
         this.vendas = vendas;
         this.listingType = listingType;
         this.imposto = imposto;
+        this.isFulfillment = isFulfillment;
+        this.catalogListing = catalogListing;
     }
 
     static setValuesWithAnuncio(

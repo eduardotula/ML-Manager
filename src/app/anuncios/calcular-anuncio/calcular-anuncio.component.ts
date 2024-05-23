@@ -28,7 +28,7 @@ export class CalcularAnuncioComponent implements OnInit {
         private lsUserService: UserLSService) {
             if(data.anuncio){
                 this.anuncio = data.anuncio;
-            }else this.anuncio = new Anuncio(0,"","","","", "", "", 0, "102",0,0,0,"",new Date(),0,false,[], [], 0,"classico");
+            }else this.anuncio = new Anuncio(0,"","","","", "", "", 0, "102",0,0,0,"",new Date(),0,false,[], [], 0,"classico", false, false);
             this.isExistingAnuncio = data.isExistingAnuncio;
 
             this.lucro = this.anuncio.lucro;
