@@ -22,7 +22,7 @@ export class Anuncio{
     public complete: boolean;
     public pictures: Url[];
     public vendas: Venda[];
-    public isFulfillment: boolean;
+    public fulfillment: boolean;
     public catalogListing: boolean;
 
     // Constructor
@@ -47,7 +47,7 @@ export class Anuncio{
         vendas: Venda[],
         imposto: number,
         listingType: string,
-        isFulfillment: boolean = false,
+        fulfillment: boolean = false,
         catalogListing: boolean = false,
 
     ) {
@@ -71,7 +71,7 @@ export class Anuncio{
         this.vendas = vendas;
         this.listingType = listingType;
         this.imposto = imposto;
-        this.isFulfillment = isFulfillment;
+        this.fulfillment = fulfillment;
         this.catalogListing = catalogListing;
     }
 
