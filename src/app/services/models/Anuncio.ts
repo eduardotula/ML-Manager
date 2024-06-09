@@ -12,6 +12,7 @@ export class Anuncio{
     public custo: number;
     public csosn: string;
     public precoDesconto: number;
+    private avaliableQuantity: number;
     public taxaML: number;
     public custoFrete: number;
     public status: string;
@@ -24,6 +25,7 @@ export class Anuncio{
     public vendas: Venda[];
     public fulfillment: boolean;
     public catalogListing: boolean;
+    public thumbnailUrl: string;
 
     // Constructor
     constructor(
@@ -49,6 +51,8 @@ export class Anuncio{
         listingType: string,
         fulfillment: boolean = false,
         catalogListing: boolean = false,
+        avaliableQuantity: number,
+        thumbnailUrl: string,
 
     ) {
         this.id = id;
@@ -73,6 +77,8 @@ export class Anuncio{
         this.imposto = imposto;
         this.fulfillment = fulfillment;
         this.catalogListing = catalogListing;
+        this.avaliableQuantity = avaliableQuantity;
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     static setValuesWithAnuncio(
@@ -99,5 +105,9 @@ export class Anuncio{
         oldAnuncio.vendas = anuncio.vendas;
         oldAnuncio.listingType = anuncio.listingType;
         oldAnuncio.imposto = anuncio.imposto;
+        oldAnuncio.fulfillment = anuncio.fulfillment;
+        oldAnuncio.catalogListing = anuncio.catalogListing;
+        oldAnuncio.avaliableQuantity = anuncio.avaliableQuantity;
+        oldAnuncio.thumbnailUrl = anuncio.thumbnailUrl;
     }
 }

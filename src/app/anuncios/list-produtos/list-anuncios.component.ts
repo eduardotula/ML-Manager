@@ -28,7 +28,7 @@ export class ListAnunciosComponent{
   dataSource = new MatTableDataSource<Anuncio>([]);
   loading: boolean = true;
   errorMsg: string = "";
-  displayedColumns: string[] = ['id', 'mlId',"descricao", "custo", "venda", "taxaMl", "frete", "lucro","status","calcular" ,"edit", "update", "delete"];
+  displayedColumns: string[] = ['id', 'mlId',"descricao","avaliableQuantity", "custo", "venda", "taxaMl", "frete", "lucro","createdAt","calcular" ,"edit", "update", "delete"];
   anuncioImages: ImageModel<Anuncio> = new ImageModel();
   filterForm: FormGroup;
 
@@ -44,6 +44,7 @@ export class ListAnunciosComponent{
       this.filterForm = formBuilder.group({
         descricao: '',
         status: true,
+
       });
       this.dataSource.filter = this.filterForm as unknown as string;
       this.filterForm.valueChanges.subscribe((value) => {
@@ -66,7 +67,7 @@ export class ListAnunciosComponent{
     this.anuncioImages.anuncioImgsMap.clear();
     this.dataSource.data.forEach((anuncio) =>{
       if(anuncio.pictures.length > 0){
-        this.imgService.getImage(anuncio.pictures[0].url).subscribe({
+        this.imgService.getImage(anuncio.thumbnailUrl).subscribe({
           next: (imgBlob) => this.anuncioImages.addImage(anuncio, imgBlob)
         });
       }

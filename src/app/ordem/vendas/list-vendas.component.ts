@@ -57,7 +57,7 @@ export class ListVendasComponent {
                 anuncios.forEach((anuncio) => {
                     requests.push(from(this.listAllVendasByFilters(anuncio.id, "ASC", dataInicial, dataFinal)));
                     if(anuncio.pictures.length > 0){
-                        this.imgService.getImage(anuncio.pictures[0].url).subscribe((imgBlob) => this.anuncioImg.addImage(anuncio, imgBlob));
+                        this.imgService.getImage(anuncio.thumbnailUrl).subscribe((imgBlob) => this.anuncioImg.addImage(anuncio, imgBlob));
                     }
                 });
                 
