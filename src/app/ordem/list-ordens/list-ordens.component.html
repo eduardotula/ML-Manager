@@ -31,14 +31,14 @@
       </div>
     
       <mat-expansion-panel matColumnDef="descricao">
-        <th mat-header-cell scope="col" *matHeaderCellDef >Ordem</th>
+        <th mat-header-cell scope="col" *matHeaderCellDef >Ordens</th>
         <td mat-cell *matCellDef="let order" >
           <div class="card">
             <mat-expansion-panel expanded>
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   <div class="row justify-content-end" style="width: 100%;">
-                    <div class="col">Ordem de {{sumItemsInOrder(order)}} produtos</div>
+                    <div class="col">Id de Ordem: {{order.orderId}}</div>
                     <div class="col" style="text-align: end;">{{order.orderCreationTime | date:'HH:mm:ss dd/MM/yy'}}</div>
                   </div>
                 </mat-panel-title>
