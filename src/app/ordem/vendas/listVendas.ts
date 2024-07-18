@@ -22,12 +22,12 @@ export class ListVendas{
         this.vendas.forEach(venda => {
             if( venda.status == "paid"){
                 this.quantidade += venda.quantidade;
+                this.somaCusto += venda.custo;
+                this.somaVenda += venda.precoDesconto;
+                this.somaLucro += venda.lucro;
             }else{
                 this.quantidadeCancelado += venda.quantidade;
             }
-            this.somaCusto += venda.custo;
-            this.somaVenda += venda.precoDesconto;
-            this.somaLucro += venda.lucro;
         })
     }
 }
