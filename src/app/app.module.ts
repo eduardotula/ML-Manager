@@ -36,6 +36,8 @@ import {
 } from '@costlydeveloper/ngx-awesome-popup';
 import { CalcularAnuncioComponent } from './anuncios/calcular-anuncio/calcular-anuncio.component';
 import { animation } from '@angular/animations';
+import { VendasDetailComponent } from './ordem/vendas/vendas-detail/vendas-detail.component';
+import { VendaStatusPipe } from './pipes/venda-status.pipe';
 
 registerLocaleData(localePt);
 
@@ -49,8 +51,10 @@ registerLocaleData(localePt);
         FilterDateComponent,
         DateToStringPipe,
         AnuncioStatusPipe,
+        VendaStatusPipe,
         NgbDatePipe,
-        CalcularAnuncioComponent
+        CalcularAnuncioComponent,
+        VendasDetailComponent
     ],
     providers: [AnuncioService,
         MercadoLivreService,

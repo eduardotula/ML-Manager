@@ -11,6 +11,7 @@ class Venda {
     public lucro: number;
     public completo: boolean;
     public status: string;
+    public imposto: number;
     public orderId: number;
     public anuncio: AnuncioVenda;
     public createdAt: Date;
@@ -22,6 +23,7 @@ class Venda {
         taxaML: number,
         custoFrete: number,
         custo: number,
+        imposto: number,
         lucro: number,
         completo: boolean,
         status: string,
@@ -41,6 +43,7 @@ class Venda {
         this.orderId = orderId;
         this.anuncio = anuncio,
         this.createdAt = createdAt;
+        this.imposto = imposto;
     }
 }
 

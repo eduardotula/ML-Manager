@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Observable, expand, forkJoin, from } from 'rxjs';
 import { AnuncioService } from 'src/app/services/anuncios.service';
@@ -11,7 +11,7 @@ import { ImageModel } from 'src/app/default-components/default-table/image-model
 import { Anuncio } from 'src/app/services/models/Anuncio';
 import { ImageMLService } from 'src/app/services/image-ml.service';
 import { FilterDateData } from '../components/filter-date/filter-date.data';
-import { data } from 'jquery';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'list-vendas',
@@ -29,7 +29,8 @@ export class ListVendasComponent {
         "quantidade",
         "quantidadeCancelado",
         "somaVenda",
-      'somaLucro'
+      'somaLucro',
+      'btnDetail'
     ];
     dataSource = new MatTableDataSource<ListVendas>([]);
     errorMsg = "";
@@ -37,10 +38,13 @@ export class ListVendasComponent {
     anuncioImg: ImageModel<Anuncio> = new ImageModel<Anuncio>();
     initialDate: Date;
     finalDate: Date;
+    @ViewChild('vendasDetailDialog')
+    vendasDetailDialog!: TemplateRef<any>;
 
-    constructor(private anuncioService: AnuncioService, private orderService: OrderService, private userLsService: UserLSService, private imgService: ImageMLService) {
+    constructor(private anuncioService: AnuncioService, private orderService: OrderService, private userLsService: UserLSService, private imgService: ImageMLService, private dialog: MatDialog) {
         const currentDate = new Date();
         this.initialDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        //this.finalDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 2, 23 , 59)
         this.finalDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59);
      }
 
@@ -137,4 +141,12 @@ export class ListVendasComponent {
         });
         return sum;
     }
+    openVendasDetailDialog(vendas: ListVendas){
+        //Correção de top bar
+        this.dialog.open(this.vendasDetailDialog, {
+          width: "880px",
+          data:{vendas: vendas},
+          position: {top: "20vh"}
+        });
+      }
 }
