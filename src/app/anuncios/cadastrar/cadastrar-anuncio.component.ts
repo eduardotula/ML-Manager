@@ -12,6 +12,7 @@ import { UserLSService } from 'src/app/services/local-storage/user-ls.service';
 import { MercadoLivreService } from 'src/app/services/mercado-livre.service';
 import { AnuncioSimple } from 'src/app/services/models/AnuncioSimple';
 import { MercadoLivreAnuncio } from 'src/app/services/models/MercadoLivreAnuncio';
+import { User } from 'src/app/services/models/User';
 
 @Component({
   selector: 'app-cadastrar-anuncio',
@@ -20,6 +21,7 @@ import { MercadoLivreAnuncio } from 'src/app/services/models/MercadoLivreAnuncio
 })
 export class CadastrarAnuncioComponent implements OnInit {
   
+  currentUserId: number;
   loading: boolean = true;
   containsRouteParams = false;
   productForm!: FormGroup;
@@ -37,7 +39,8 @@ export class CadastrarAnuncioComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, public service: AnuncioService, public lsUser: UserLSService,
     public route: ActivatedRoute, public router: Router, private mlService: MercadoLivreService, private dialog: MatDialog,
     private mlImageService: ImageMLService) {
-    
+      
+    this.currentUserId = this.lsUser.getCurrentUser();
     this.filterForm = this.formBuilder.group({
       id: "",
       descricao: "",
@@ -70,9 +73,9 @@ export class CadastrarAnuncioComponent implements OnInit {
     this.resetPageState();
     this.loading = true;
     //Filtra para que somente anuncios que não estão registrados sejam exibidos
-    this.service.listAllAnunciosMercadoLivre(this.lsUser.getCurrentUser(), true).subscribe({
+    this.service.listAllAnunciosMercadoLivre(this.currentUserId, true).subscribe({
       next: (mlIds) => {
-        this.service.listAll(this.lsUser.getCurrentUser(), true).subscribe({
+        this.service.listAll(this.currentUserId, true).subscribe({
           next: (anuncios) => {
             var registeredIds = new Set(anuncios.map((anuncio) => anuncio.mlId));
             var filtered = mlIds.filter(mlId => !registeredIds.has(mlId));
@@ -164,7 +167,7 @@ export class CadastrarAnuncioComponent implements OnInit {
       var anuncioSimple = new AnuncioSimple(this.productForm.value["mlId"], this.productForm.value["csosn"], this.productForm.value["custo"]);
       this.loading = true;
 
-      this.service.getAnuncioByMlId(anuncioSimple.mlId, this.lsUser.getCurrentUser(), false).subscribe({
+      this.service.getAnuncioByMlId(anuncioSimple.mlId, this.currentUserId, false).subscribe({
         next: (existAnuncio) => {
 
           if(!this.containsRouteParams && !existAnuncio){
@@ -186,7 +189,7 @@ export class CadastrarAnuncioComponent implements OnInit {
   onTableClick(mlId: MercadoLivreAnuncio ){
     this.dialog.closeAll();
     this.loading = true;
-    this.service.getAnuncioByMlIdSearch(mlId.id, this.lsUser.getCurrentUser()).subscribe({next: (prod) => {
+    this.service.getAnuncioByMlIdSearch(mlId.id, this.currentUserId).subscribe({next: (prod) => {
       this.productForm.patchValue({
         descricao: prod.descricao,
         sku: prod.sku,
@@ -204,7 +207,7 @@ export class CadastrarAnuncioComponent implements OnInit {
   }
 
   createAnuncio(anuncioSimple: AnuncioSimple){
-    this.service.createAnuncioSearch(anuncioSimple, this.lsUser.getCurrentUser()).subscribe({
+    this.service.createAnuncioSearch(anuncioSimple, this.currentUserId).subscribe({
       next: () => {
         this.dataSource.data = this.dataSource.data.filter(anuncio => anuncio.id != anuncioSimple.mlId);
         this.resetPageState();
@@ -218,7 +221,7 @@ export class CadastrarAnuncioComponent implements OnInit {
   }
 
   updateAnuncio(anuncioSimple: AnuncioSimple, navigateToHome: boolean){
-    this.service.updateAnuncioSimple(anuncioSimple, this.lsUser.getCurrentUser()).subscribe({
+    this.service.updateAnuncioSimple(anuncioSimple, this.currentUserId).subscribe({
       next: () => {
         if(navigateToHome)
           this.router.navigate([""]);

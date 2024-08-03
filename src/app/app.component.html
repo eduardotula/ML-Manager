@@ -23,7 +23,7 @@
         </li>
         <li class="list-inline-item fs-5 list-item">
           <div>
-            <select class="form-select"  name="user">
+            <select class="form-select" (change)="selectUser($event)" [(ngModel)]="viewSelectedUser" name="user">
               <option *ngFor="let user of users" [value]="user.name">{{user.name}}</option>
             </select>
           </div>

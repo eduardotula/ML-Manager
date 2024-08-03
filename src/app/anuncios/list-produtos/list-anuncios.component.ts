@@ -24,7 +24,7 @@ export class ListAnunciosComponent{
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('calcularDialog', { static: true })
   calcularDialog!: TemplateRef<any>;
-
+  currentUserId: number;
   dataSource = new MatTableDataSource<Anuncio>([]);
   loading: boolean = true;
   errorMsg: string = "";
@@ -40,6 +40,7 @@ export class ListAnunciosComponent{
     private confirmBoxEvokeService: ConfirmBoxEvokeService,
     formBuilder: FormBuilder,
     ) {
+      this.currentUserId = this.lsUser.getCurrentUser();
       this.dataSource.filterPredicate = this.customFilter;
       this.filterForm = formBuilder.group({
         descricao: '',
@@ -54,7 +55,7 @@ export class ListAnunciosComponent{
 
    ngAfterViewInit(): void {
 
-    this.service.listAll(this.lsUser.getCurrentUser(), true).subscribe({
+    this.service.listAll(this.currentUserId, true).subscribe({
       next: (prods) => {
         this.refreshAnuncioData(prods);
       }, error: (error) => this.errorMsg = error.message
@@ -104,7 +105,7 @@ export class ListAnunciosComponent{
   }
 
   clickUpdate(anuncio: Anuncio) {
-    this.service.updateAnuncioSearchByMlId(anuncio.mlId, this.lsUser.getCurrentUser()).subscribe({
+    this.service.updateAnuncioSearchByMlId(anuncio.mlId, this.currentUserId).subscribe({
       next: (anuncio) => {
         var anuncioIndex = this.dataSource.data.findIndex((anun) => anun.id == anuncio.id);
         if(anuncioIndex > -1){
@@ -132,7 +133,7 @@ export class ListAnunciosComponent{
 
     const requests: Observable<Anuncio>[] = [];
     this.dataSource.filteredData.forEach((anunciosRegistrado)=>{
-      requests.push(this.service.updateAnuncioSearchByMlId(anunciosRegistrado.mlId, this.lsUser.getCurrentUser()))
+      requests.push(this.service.updateAnuncioSearchByMlId(anunciosRegistrado.mlId, this.currentUserId))
     });
 
     forkJoin(requests).subscribe(

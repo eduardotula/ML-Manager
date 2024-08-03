@@ -11,6 +11,7 @@ import { UserLSService } from './services/local-storage/user-ls.service';
 export class AppComponent{
 
   selectedUser!: User;
+  viewSelectedUser!: string;
   users!: User[];
   errorMsg!: string;
 
@@ -20,11 +21,16 @@ export class AppComponent{
   ngAfterViewInit(): void {
     this.userService.getAll().subscribe({
       next: (users) =>{
-        this.users = users;
-        if(this.users){
-          this.selectedUser = this.users[0];
-          this.userLs.setCurrentUser(this.selectedUser)
-        } 
+        if(users){
+          this.users = users;
+          if(this.userLs.getCurrentUser()){
+            this.selectedUser = this.users.filter(user => user.id === this.userLs.getCurrentUser())[0];
+          }
+          else this.selectedUser = this.users[0];
+
+          this.viewSelectedUser = this.selectedUser.name;
+          this.userLs.setCurrentUser(this.selectedUser);
+        }
         
       }, error: (err) => {
         console.log(err.message);
@@ -34,6 +40,17 @@ export class AppComponent{
     });
   }
 
+  selectUser(event: Event){
+    const selectElement = event.target as HTMLSelectElement;
+    let toSelect = this.users.filter(user => user.name === selectElement.value);
+    if(toSelect.length > 0){
+      this.selectedUser = toSelect[0];
+      this.userLs.setCurrentUser(this.selectedUser);
+      window.location.reload();
+    }
+
+    
+  }
 
 
 }

@@ -15,7 +15,7 @@ export class CalcularAnuncioComponent implements OnInit {
 
     lucro: number = 0; 
     anuncio: Anuncio;
-
+    currentUserId: number;
     isExistingAnuncio: boolean;
     consultaForm: FormGroup;
     @Input("isExistingAnuncio")
@@ -26,6 +26,7 @@ export class CalcularAnuncioComponent implements OnInit {
         private formBuilder: FormBuilder,
         @Inject(MAT_DIALOG_DATA) public data: any, private anuncioService: AnuncioService,
         private lsUserService: UserLSService) {
+            this.currentUserId = this.lsUserService.getCurrentUser();
             if(data.anuncio){
                 this.anuncio = data.anuncio;
             }else this.anuncio = new Anuncio(0,"","","","", "", "", 0, "102",0,0,0,"",new Date(),0,false,[], [], 0,"classico", false, false, 0,"");
@@ -74,10 +75,10 @@ export class CalcularAnuncioComponent implements OnInit {
         this.loading = true;
         if(this.consultaForm.valid){
 
-            var useId = this.lsUserService.getCurrentUser();
+            var useId = this.currentUserId;
             if(!this.isExistingAnuncio){
                 var response = await this.anuncioService.getAnuncioByMlIdSearch(this.consultaForm.get("equivalentMlId")!.value,
-                 this.lsUserService.getCurrentUser()).toPromise();
+                this.currentUserId).toPromise();
                  if (!response) {
                     this.loading = false;
                     throw Error("Falha ao buscar Anuncio");

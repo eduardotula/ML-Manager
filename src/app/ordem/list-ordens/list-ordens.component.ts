@@ -25,7 +25,7 @@ export class ListOrdensComponent {
     'custoTotal',
     'lucroTotal',
   ];
-
+  currentUserId: number;
   errorMsg!: string;
   loading: boolean = false;
   panelOpenState = false;
@@ -42,6 +42,7 @@ export class ListOrdensComponent {
     public router: Router,
     private imgService: ImageMLService,
   ) {
+    this.currentUserId = this.lsUser.getCurrentUser();
     const currentDate = new Date();
     this.initialDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
     this.finalDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59);
@@ -62,7 +63,7 @@ export class ListOrdensComponent {
     this.loading = true;
     this.dataSource.sort = this.sort;
     this.orderService
-      .listByFilters(this.pagination.page, this.lsUser.getCurrentUser(), 'DESC', filter.dataInicial, filter.dataFinal, {descricao: filter.text})
+      .listByFilters(this.pagination.page, this.currentUserId, 'DESC', filter.dataInicial, filter.dataFinal, {descricao: filter.text})
       .subscribe({
         next: (orders) => {
           this.dataSource.data = orders.results;

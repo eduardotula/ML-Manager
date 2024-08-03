@@ -32,6 +32,7 @@ export class ListVendasComponent {
       'somaLucro',
       'btnDetail'
     ];
+    currentUserId: number;
     dataSource = new MatTableDataSource<ListVendas>([]);
     errorMsg = "";
     loading: boolean = false;
@@ -42,6 +43,7 @@ export class ListVendasComponent {
     vendasDetailDialog!: TemplateRef<any>;
 
     constructor(private anuncioService: AnuncioService, private orderService: OrderService, private userLsService: UserLSService, private imgService: ImageMLService, private dialog: MatDialog) {
+        this.currentUserId = this.userLsService.getCurrentUser();
         const currentDate = new Date();
         this.initialDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         //this.finalDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 2, 23 , 59)
@@ -54,7 +56,7 @@ export class ListVendasComponent {
 
     populateTable(dataInicial: Date| null, dataFinal: Date|null){
         this.loading = true;
-        this.anuncioService.listAll(this.userLsService.getCurrentUser(), true).subscribe({
+        this.anuncioService.listAll(this.currentUserId, true).subscribe({
             next: (anuncios) => {
                 
                 const requests: Observable<Venda[]>[] = [];
