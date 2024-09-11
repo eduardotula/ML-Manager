@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
@@ -10,6 +10,7 @@ import { AnuncioService } from 'src/app/services/anuncios.service';
 import { ImageMLService } from 'src/app/services/image-ml.service';
 import { UserLSService } from 'src/app/services/local-storage/user-ls.service';
 import { MercadoLivreService } from 'src/app/services/mercado-livre.service';
+import { Anuncio } from 'src/app/services/models/Anuncio';
 import { AnuncioSimple } from 'src/app/services/models/AnuncioSimple';
 import { MercadoLivreAnuncio } from 'src/app/services/models/MercadoLivreAnuncio';
 import { User } from 'src/app/services/models/User';
@@ -31,6 +32,8 @@ export class CadastrarAnuncioComponent implements OnInit {
   @ViewChild('anuncioDialog', { static: true })
   anunciosDialog!: TemplateRef<any>;
   anuncioImages: ImageModel<MercadoLivreAnuncio> = new ImageModel();
+  @Input("existingAnuncio")
+  existingAnuncio!: Anuncio;
   dataSource = new MatTableDataSource<MercadoLivreAnuncio>([]);
   @ViewChild('tables') table!: MatTable<MercadoLivreAnuncio>;
   @ViewChild(MatSort) sort!: MatSort;
@@ -49,14 +52,18 @@ export class CadastrarAnuncioComponent implements OnInit {
     this.dataSource.filter = this.filterForm  as unknown as string;
 
     this.route.queryParams.subscribe(params =>{
+      this.existingAnuncio = new Anuncio(0,params['mlId'],params['sku'],"","", params['descricao'], "", params['custo'], params['csosn'],0,0,0,"",new Date(),0,false,[], [], 0,"classico", false, false, 0,"");
+    });
+    
+    if(this.existingAnuncio){
       this.productForm = this.formBuilder.group({
-        mlId: [params['mlId'], Validators.required],
-        custo: [params['custo'], Validators.required],
-        csosn: [params['csosn'], Validators.required],
-        descricao: [params['descricao']],
-        sku: [params['sku']],
+        mlId: [this.existingAnuncio.mlId, Validators.required],
+        custo: [this.existingAnuncio.custo, Validators.required],
+        csosn: [this.existingAnuncio.csosn, Validators.required],
+        descricao: [this.existingAnuncio.descricao],
+        sku: [this.existingAnuncio.sku],
       })
-      if(params['mlId']) this.onTableClick({id: params["mlId"]} as MercadoLivreAnuncio);
+      if(this.existingAnuncio.mlId) this.onTableClick({id: this.existingAnuncio.mlId} as MercadoLivreAnuncio);
 
       if(this.productForm.valid){
         this.containsRouteParams = true;
@@ -65,7 +72,7 @@ export class CadastrarAnuncioComponent implements OnInit {
       this.filterForm.valueChanges.subscribe((value) => {
         this.dataSource.filter = value;
       });
-    });
+    };
     this.dataSource.filterPredicate = this.customFilter;
   }
 

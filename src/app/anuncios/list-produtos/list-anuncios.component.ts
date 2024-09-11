@@ -24,6 +24,8 @@ export class ListAnunciosComponent{
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('calcularDialog', { static: true })
   calcularDialog!: TemplateRef<any>;
+  @ViewChild('editDialog', { static: true })
+  editDialog!: TemplateRef<any>;
   currentUserId: number;
   dataSource = new MatTableDataSource<Anuncio>([]);
   loading: boolean = true;
@@ -31,6 +33,7 @@ export class ListAnunciosComponent{
   displayedColumns: string[] = ['id', 'mlId',"descricao","avaliableQuantity", "custo", "venda", "taxaMl", "frete", "lucro","createdAt","calcular" ,"edit", "update", "delete"];
   anuncioImages: ImageModel<Anuncio> = new ImageModel();
   filterForm: FormGroup;
+  currentEditingAnuncio!: Anuncio;
 
   constructor(
     public service: AnuncioService,
@@ -84,12 +87,13 @@ export class ListAnunciosComponent{
   }
   
   clickEdit(anuncio: Anuncio) {
-    this.router.navigate(["/cadastrar-anuncio"], {
-      queryParams: {
-        mlId: anuncio.mlId,
-        custo: anuncio.custo,
-        csosn: anuncio.csosn
-      }
+    this.currentEditingAnuncio = anuncio;
+    console.log(this.currentEditingAnuncio)
+      //Correção de top bar
+      this.dialog.open(this.editDialog, {
+      width: "540px",
+      data:{anuncio: anuncio},
+      position: {top: "20vh"}
     });
   }
 

@@ -141,6 +141,13 @@
   </table>
 </div>
 
+<ng-template class="container-sm dialog" #editDialog>
+  <mat-dialog-content class="table-responsive table-container card">
+    <app-cadastrar-anuncio [existingAnuncio]="currentEditingAnuncio"></app-cadastrar-anuncio>
+  </mat-dialog-content>
+</ng-template>
+
+
 <ng-template class="container-sm dialog" #calcularDialog>
   <mat-dialog-content class="table-responsive table-container card">
     <calcular-anuncio></calcular-anuncio>

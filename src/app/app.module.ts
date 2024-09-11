@@ -38,6 +38,7 @@ import { CalcularAnuncioComponent } from './anuncios/calcular-anuncio/calcular-a
 import { animation } from '@angular/animations';
 import { VendasDetailComponent } from './ordem/vendas/vendas-detail/vendas-detail.component';
 import { VendaStatusPipe } from './pipes/venda-status.pipe';
+import { EditarAnuncioComponent } from './anuncios/editar/editar-anuncio.component';
 
 registerLocaleData(localePt);
 
@@ -46,6 +47,7 @@ registerLocaleData(localePt);
         AppComponent,
         ListAnunciosComponent,
         CadastrarAnuncioComponent,
+        EditarAnuncioComponent,
         ListOrdensComponent,
         ListVendasComponent,
         FilterDateComponent,
