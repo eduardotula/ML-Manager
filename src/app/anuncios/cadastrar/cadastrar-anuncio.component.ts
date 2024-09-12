@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
@@ -13,7 +13,6 @@ import { MercadoLivreService } from 'src/app/services/mercado-livre.service';
 import { Anuncio } from 'src/app/services/models/Anuncio';
 import { AnuncioSimple } from 'src/app/services/models/AnuncioSimple';
 import { MercadoLivreAnuncio } from 'src/app/services/models/MercadoLivreAnuncio';
-import { User } from 'src/app/services/models/User';
 
 @Component({
   selector: 'app-cadastrar-anuncio',
@@ -21,7 +20,7 @@ import { User } from 'src/app/services/models/User';
   styleUrls: ['./cadastrar-anuncio.component.scss'],
 })
 export class CadastrarAnuncioComponent implements OnInit {
-  
+
   currentUserId: number;
   loading: boolean = true;
   containsRouteParams = false;
@@ -37,25 +36,35 @@ export class CadastrarAnuncioComponent implements OnInit {
   dataSource = new MatTableDataSource<MercadoLivreAnuncio>([]);
   @ViewChild('tables') table!: MatTable<MercadoLivreAnuncio>;
   @ViewChild(MatSort) sort!: MatSort;
-  displayedColumns = ["img","id", "title", "status"];
+  displayedColumns = ["img", "id", "title", "status"];
+  @Output() updatedAnuncioEventEmmiter = new EventEmitter<Anuncio>();
 
   constructor(private formBuilder: FormBuilder, public service: AnuncioService, public lsUser: UserLSService,
     public route: ActivatedRoute, public router: Router, private mlService: MercadoLivreService, private dialog: MatDialog,
     private mlImageService: ImageMLService) {
-      
+
+      console.log(this.existingAnuncio)
     this.currentUserId = this.lsUser.getCurrentUser();
     this.filterForm = this.formBuilder.group({
       id: "",
       descricao: "",
       status: true
     });
-    this.dataSource.filter = this.filterForm  as unknown as string;
+    this.productForm = this.formBuilder.group({
+      mlId: ["", Validators.required],
+      custo: [0, Validators.required],
+      csosn: ["", Validators.required],
+    })
+    this.dataSource.filter = this.filterForm as unknown as string;
 
-    this.route.queryParams.subscribe(params =>{
-      this.existingAnuncio = new Anuncio(0,params['mlId'],params['sku'],"","", params['descricao'], "", params['custo'], params['csosn'],0,0,0,"",new Date(),0,false,[], [], 0,"classico", false, false, 0,"");
-    });
-    
-    if(this.existingAnuncio){
+    this.dataSource.filterPredicate = this.customFilter;
+  }
+
+  ngOnInit() {
+    this.resetPageState();
+    this.loading = true;
+    console.log(this.existingAnuncio)
+    if (this.existingAnuncio) {
       this.productForm = this.formBuilder.group({
         mlId: [this.existingAnuncio.mlId, Validators.required],
         custo: [this.existingAnuncio.custo, Validators.required],
@@ -63,42 +72,36 @@ export class CadastrarAnuncioComponent implements OnInit {
         descricao: [this.existingAnuncio.descricao],
         sku: [this.existingAnuncio.sku],
       })
-      if(this.existingAnuncio.mlId) this.onTableClick({id: this.existingAnuncio.mlId} as MercadoLivreAnuncio);
 
-      if(this.productForm.valid){
+      if (this.productForm.valid) {
         this.containsRouteParams = true;
       }
 
       this.filterForm.valueChanges.subscribe((value) => {
         this.dataSource.filter = value;
       });
+    } else {
+      //Filtra para que somente anuncios que não estão registrados sejam exibidos
+      this.service.listAllAnunciosMercadoLivre(this.currentUserId, true).subscribe({
+        next: (mlIds) => {
+          this.service.listAll(this.currentUserId, true).subscribe({
+            next: (anuncios) => {
+              var registeredIds = new Set(anuncios.map((anuncio) => anuncio.mlId));
+              var filtered = mlIds.filter(mlId => !registeredIds.has(mlId));
+
+              this.setMercadoLivreAnuncios(filtered);
+            }
+          });
+
+        },
+        error: (msg) => {
+          this.errorMsg = msg.message;
+          this.loading = false;
+        }
+      });
     };
-    this.dataSource.filterPredicate = this.customFilter;
-  }
 
-  ngOnInit() {
-    this.resetPageState();
-    this.loading = true;
-    //Filtra para que somente anuncios que não estão registrados sejam exibidos
-    this.service.listAllAnunciosMercadoLivre(this.currentUserId, true).subscribe({
-      next: (mlIds) => {
-        this.service.listAll(this.currentUserId, true).subscribe({
-          next: (anuncios) => {
-            var registeredIds = new Set(anuncios.map((anuncio) => anuncio.mlId));
-            var filtered = mlIds.filter(mlId => !registeredIds.has(mlId));
-
-            this.setMercadoLivreAnuncios(filtered);
-            
-          }
-        });
-
-      },
-      error: (msg) => {
-        this.errorMsg = msg.message;
-        this.loading = false;
-      }
-    });
-    if(!this.productForm.valid){
+    if (!this.productForm.valid) {
       this.resetForm();
     }
   }
@@ -106,55 +109,55 @@ export class CadastrarAnuncioComponent implements OnInit {
   customFilter(data: MercadoLivreAnuncio, filter: any): boolean {
     const a = !filter.id || data.id.toLowerCase().includes(filter.id.toLowerCase());
     const b = !filter.descricao || data.title.toLowerCase().includes(filter.descricao.toLowerCase());
-    
+
     const s = !filter.status || data.status == "active" ? true : false;
     return a && b && s;
   }
-  
-  openBuscarDialog(){
+
+  openBuscarDialog() {
     //Correção de top bar
     this.dialog.open(this.anunciosDialog, {
       width: "150vh",
-      position: {top: "20vh"}
+      position: { top: "20vh" }
     });
   }
 
-  get mlId(){
+  get mlId() {
     return this.productForm.get("mlId");
   }
 
-  get custo(){
+  get custo() {
     return this.productForm.get("custo");
   }
 
-  get csosn(){
+  get csosn() {
     return this.productForm.get("csosn");
   }
 
-  get descricao(){
+  get descricao() {
     return this.productForm.get("descricao");
   }
-  get sku(){
+  get sku() {
     return this.productForm.get("sku");
   }
 
-  setMercadoLivreAnuncios(ids: string[]){
+  setMercadoLivreAnuncios(ids: string[]) {
     var anuncioObser: Observable<MercadoLivreAnuncio>[] = [];
     ids.forEach(id => anuncioObser.push(this.mlService.getAnuncioByMlId(id)))
     forkJoin(anuncioObser).subscribe({
-      next: (mercadoLivreAnuncio) =>{
+      next: (mercadoLivreAnuncio) => {
         this.dataSource.data = mercadoLivreAnuncio;
         this.dataSource.sort = this.sort;
-        
-        mercadoLivreAnuncio.forEach(mlanuncio =>{
 
-          if(mlanuncio.pictures && mlanuncio.pictures.length > 0){
+        mercadoLivreAnuncio.forEach(mlanuncio => {
+
+          if (mlanuncio.pictures && mlanuncio.pictures.length > 0) {
             this.mlImageService.getImage(mlanuncio.pictures[0].url).subscribe({
               next: (imgBlob) => {
                 this.anuncioImages.addImage(mlanuncio, imgBlob);
                 this.loading = false;
               },
-              error: (error)=>{
+              error: (error) => {
                 this.loading = false;
                 this.errorMsg = error.message;
               }
@@ -162,7 +165,7 @@ export class CadastrarAnuncioComponent implements OnInit {
           }
         })
 
-      }, error: (error) =>{
+      }, error: (error) => {
         this.loading = false;
         this.errorMsg = error.message;
       }
@@ -177,13 +180,13 @@ export class CadastrarAnuncioComponent implements OnInit {
       this.service.getAnuncioByMlId(anuncioSimple.mlId, this.currentUserId, false).subscribe({
         next: (existAnuncio) => {
 
-          if(!this.containsRouteParams && !existAnuncio){
-              this.createAnuncio(anuncioSimple);
+          if (!this.containsRouteParams && !existAnuncio) {
+            this.createAnuncio(anuncioSimple);
           } else {
             this.updateAnuncio(anuncioSimple, this.containsRouteParams);
           }
 
-        },error: (error) =>{
+        }, error: (error) => {
           this.errorMsg = error.message;
           this.loading = false;
         }
@@ -193,27 +196,29 @@ export class CadastrarAnuncioComponent implements OnInit {
     }
   }
 
-  onTableClick(mlId: MercadoLivreAnuncio ){
+  onTableClick(mlId: MercadoLivreAnuncio) {
     this.dialog.closeAll();
     this.loading = true;
-    this.service.getAnuncioByMlIdSearch(mlId.id, this.currentUserId).subscribe({next: (prod) => {
-      this.productForm.patchValue({
-        descricao: prod.descricao,
-        sku: prod.sku,
-        mlId: prod.mlId
-      })
-      this.resetPageState();
-    }, error: (erro) => {
-      this.loading = false;
-      this.errorMsg = "Falha ao obter descrição de Anuncio"
-    }});
+    this.service.getAnuncioByMlIdSearch(mlId.id, this.currentUserId).subscribe({
+      next: (prod) => {
+        this.productForm.patchValue({
+          descricao: prod.descricao,
+          sku: prod.sku,
+          mlId: prod.mlId
+        })
+        this.resetPageState();
+      }, error: (erro) => {
+        this.loading = false;
+        this.errorMsg = "Falha ao obter descrição de Anuncio"
+      }
+    });
 
     this.productForm.patchValue({
       mlId: mlId,
     })
   }
 
-  createAnuncio(anuncioSimple: AnuncioSimple){
+  createAnuncio(anuncioSimple: AnuncioSimple) {
     this.service.createAnuncioSearch(anuncioSimple, this.currentUserId).subscribe({
       next: () => {
         this.dataSource.data = this.dataSource.data.filter(anuncio => anuncio.id != anuncioSimple.mlId);
@@ -224,34 +229,35 @@ export class CadastrarAnuncioComponent implements OnInit {
         this.errorMsg = error.message;
         this.loading = false;
       }
-      });
+    });
   }
 
-  updateAnuncio(anuncioSimple: AnuncioSimple, navigateToHome: boolean){
+  updateAnuncio(anuncioSimple: AnuncioSimple, navigateToHome: boolean) {
     this.service.updateAnuncioSimple(anuncioSimple, this.currentUserId).subscribe({
-      next: () => {
-        if(navigateToHome)
+      next: (anuncio) => {
+        if (navigateToHome)
           this.router.navigate([""]);
-          this.resetPageState();
-          this.resetForm();
+        this.updatedAnuncioEventEmmiter.emit(anuncio);
+        this.resetPageState();
+        this.resetForm();
       },
       error: (error) => {
         this.errorMsg = error.message;
         this.loading = false;
       }
-      });
+    });
   }
 
-  getImageForAnuncio(anuncio: MercadoLivreAnuncio){
+  getImageForAnuncio(anuncio: MercadoLivreAnuncio) {
     return this.anuncioImages.getImage(anuncio);
   }
 
-  resetPageState(){
+  resetPageState() {
     this.loading = false;
     this.errorMsg = "";
   }
 
-  resetForm(){
+  resetForm() {
     this.productForm = this.formBuilder.group({
       mlId: ["", Validators.required],
       custo: ["", Validators.required],

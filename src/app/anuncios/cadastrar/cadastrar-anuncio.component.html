@@ -11,7 +11,7 @@
             <label for="mlId">ML ID</label>
             <div class="row">
               <input  type="text" id="mlId" name="mlId" class="form-control col" formControlName="mlId" style="margin-right: 10px;">
-              <button  class="btn btn-primary col-2" (click)="openBuscarDialog()">Buscar</button>
+              <button *ngIf="!existingAnuncio" class="btn btn-primary col-2" (click)="openBuscarDialog()">Buscar</button>
             </div>
           </div>
   

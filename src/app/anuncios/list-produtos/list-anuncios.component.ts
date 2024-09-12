@@ -91,7 +91,7 @@ export class ListAnunciosComponent{
     console.log(this.currentEditingAnuncio)
       //Correção de top bar
       this.dialog.open(this.editDialog, {
-      width: "540px",
+      width: "740px",
       data:{anuncio: anuncio},
       position: {top: "20vh"}
     });
@@ -116,10 +116,15 @@ export class ListAnunciosComponent{
           var oldData = this.dataSource.data[anuncioIndex];
           Anuncio.setValuesWithAnuncio(oldData, anuncio);
           this.table.renderRows();
+          this.dialog.closeAll();
         }
       },
       error: (err) => this.errorMsg = err.message
     });
+  };
+
+  onSubmitEditProduto(anuncio: Anuncio){
+    this.clickUpdate(anuncio);
   }
 
   openBuscarDialog(anuncio: Anuncio | null, isExistingAnuncio: boolean){
