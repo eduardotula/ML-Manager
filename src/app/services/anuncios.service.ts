@@ -94,4 +94,12 @@ export class AnuncioService extends CommonService{
     return this.http.get<any>(this.url + `simulation`, {params}).pipe(catchError(this.handleError));
   } 
 
+  listAllAnunciosWithMessages(userId: number): Observable<Anuncio[]>{
+    var params ={
+      "user-id": userId,
+    };
+
+    return this.http.get<Anuncio[]>(this.url + 'anuncioMessage', {params}).pipe(catchError(this.handleError));
+  }
+
 }

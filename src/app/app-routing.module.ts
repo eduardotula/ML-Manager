@@ -4,12 +4,14 @@ import { CadastrarAnuncioComponent } from './anuncios/cadastrar/cadastrar-anunci
 import { ListAnunciosComponent } from './anuncios/list-produtos/list-anuncios.component';
 import { ListOrdensComponent } from './ordem/list-ordens/list-ordens.component';
 import { ListVendasComponent } from './ordem/vendas/list-vendas.component';
+import { ListMessagesComponent } from './mensagens/list-messages/list-messages.component';
 
 const routes: Routes = [
   { path: "", component: ListAnunciosComponent},
   { path: "cadastrar-anuncio", component: CadastrarAnuncioComponent},
   { path: "list-ordens", component: ListOrdensComponent},
   { path: "list-vendas", component: ListVendasComponent},
+  { path: "anuncio-messages", component: ListMessagesComponent},
 
 ];
 

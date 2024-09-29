@@ -39,6 +39,7 @@ import { animation } from '@angular/animations';
 import { VendasDetailComponent } from './ordem/vendas/vendas-detail/vendas-detail.component';
 import { VendaStatusPipe } from './pipes/venda-status.pipe';
 import { EditarAnuncioComponent } from './anuncios/editar/editar-anuncio.component';
+import { ListMessagesComponent } from './mensagens/list-messages/list-messages.component';
 
 registerLocaleData(localePt);
 
@@ -56,7 +57,8 @@ registerLocaleData(localePt);
         VendaStatusPipe,
         NgbDatePipe,
         CalcularAnuncioComponent,
-        VendasDetailComponent
+        VendasDetailComponent,
+        ListMessagesComponent,
     ],
     providers: [AnuncioService,
         MercadoLivreService,
