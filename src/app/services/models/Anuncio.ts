@@ -116,7 +116,7 @@ export class Anuncio{
     }
 }
 
-class AnuncioMessage{
+export class AnuncioMessage{
 
     public id: number;
     public message: string;

@@ -1,4 +1,19 @@
+<div class="alert alert-danger accordion" *ngIf="errorMsg">
+    <div class="accordion-item">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+        aria-expanded="true" aria-controls="collapseOne">
+        Errors
+      </button>
+      <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+          {{errorMsg}}
+        </div>
+      </div>
+    </div>
+  </div>
+
 <div class="container limit-content card" style="margin-top: 10px;">
+    <ngx-loading [show]="loading"></ngx-loading>
 
     <div *ngFor="let anuncio of anuncios" class="container-sm container-custom card">
         <div class="container container-custom">
@@ -7,30 +22,53 @@
             <!-- Seção esquerda -->
             <div class="col-2 d-flex flex-column align-items-center">
                 <img src="image.jpg" alt="Imagem" class="img-fluid mb-2" style="max-width: 100px;">
-                <p>Text</p>
+                <p>{{anuncio.descricao}}</p>
             </div>
 
             <div *ngFor="let anuncioMessage of anuncio.anuncioMessage" class="col">
                 <div ngbAccordion>
                     <div ngbAccordionItem [collapsed]="false">
                         <h2 ngbAccordionHeader>
-                            <button ngbAccordionButton>Simple</button>
+                            <button ngbAccordionButton>{{anuncioMessage.messageType}}</button>
                         </h2>
                         <div ngbAccordionCollapse>
                             <div ngbAccordionBody>
                                 <ng-template>
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon
-                                    officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf
-                                    moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim
-                                    keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur
-                                    butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably
-                                    haven't heard of them accusamus labore sustainable VHS.
+                                    <form #userForm="ngForm" class="form-group" (ngSubmit)="onSaveMessage(anuncio, anuncioMessage)">
+                                            <label>Mensagem</label>
+                                            <textarea ngModel  class="form-control" name="message" [(ngModel)]="anuncioMessage.message" required ></textarea>
+                                        <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Salvar</button>
+                                    </form>
                                 </ng-template>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary" (click)="openAddMessageType(anuncio)">+</button>
+            </div>
         </div>
     </div>
 </div>
+
+<ng-template class="container-sm dialog" #messageDialog>
+    <mat-dialog-content class="table-responsive table-container card">
+        <form [formGroup]="addMessageForm" class="form-group" (ngSubmit)="onAddMessage()">
+            <div class="row">
+                <div >
+                    <label class="form-label" for="messageType">Tipo da mensagem:</label>
+                    <select class="form-select" formControlName="messageType">
+                      <option *ngFor="let avaliableOption of getAvaliableOptionsByAnuncio(selectedAnuncioToAddMessage)">{{avaliableOption}}</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="margin-top: 10px;">Mensagem</label>
+                    <textarea class="form-control" name="message" formControlName="message" required></textarea>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Salvar</button>
+        </form>
+        
+    </mat-dialog-content>
+  </ng-template>
