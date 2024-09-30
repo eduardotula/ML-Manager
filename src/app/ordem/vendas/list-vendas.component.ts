@@ -28,6 +28,7 @@ export class ListVendasComponent {
         "descricao",
         "quantidade",
         "quantidadeCancelado",
+        "somaTaxa",
         "somaVenda",
       'somaLucro',
       'btnDetail'
@@ -58,7 +59,6 @@ export class ListVendasComponent {
         this.loading = true;
         this.anuncioService.listAll(this.currentUserId, true).subscribe({
             next: (anuncios) => {
-                
                 const requests: Observable<Venda[]>[] = [];
                 anuncios.forEach((anuncio) => {
                     requests.push(from(this.listAllVendasByFilters(anuncio.id, "ASC", dataInicial, dataFinal)));
@@ -110,10 +110,6 @@ export class ListVendasComponent {
         return vendas;
     }
 
-    observeVendas(requests: Observable<Venda[]>[], allAnuncios: Anuncio[]) {
-
-    }
-
     onSubmitDate(datas: FilterDateData){
         this.populateTable(datas.dataInicial, datas.dataFinal);
     }
@@ -143,6 +139,16 @@ export class ListVendasComponent {
         });
         return sum;
     }
+
+        
+    sumTaxaMl(){
+        var sum = 0;
+        this.dataSource.filteredData.forEach(data =>{
+            sum += data.somaTaxaML;
+        });
+        return sum;
+    }
+
     openVendasDetailDialog(vendas: ListVendas){
         //Correção de top bar
         this.dialog.open(this.vendasDetailDialog, {

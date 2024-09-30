@@ -26,6 +26,7 @@ export class Anuncio{
     public fulfillment: boolean;
     public catalogListing: boolean;
     public thumbnailUrl: string;
+    public anuncioMessage: AnuncioMessage[];
 
     // Constructor
     constructor(
@@ -53,6 +54,7 @@ export class Anuncio{
         catalogListing: boolean = false,
         avaliableQuantity: number,
         thumbnailUrl: string,
+        anuncioMessage: AnuncioMessage[],
 
     ) {
         this.id = id;
@@ -79,6 +81,7 @@ export class Anuncio{
         this.catalogListing = catalogListing;
         this.avaliableQuantity = avaliableQuantity;
         this.thumbnailUrl = thumbnailUrl;
+        this.anuncioMessage = anuncioMessage;
     }
 
     static setValuesWithAnuncio(
@@ -109,5 +112,21 @@ export class Anuncio{
         oldAnuncio.catalogListing = anuncio.catalogListing;
         oldAnuncio.avaliableQuantity = anuncio.avaliableQuantity;
         oldAnuncio.thumbnailUrl = anuncio.thumbnailUrl;
+        oldAnuncio.anuncioMessage = anuncio.anuncioMessage;
+    }
+}
+
+class AnuncioMessage{
+
+    public id: number;
+    public message: string;
+    public messageType: string;
+    public anuncioId: number;
+
+    constructor(id: number, message: string, messageType: string, anuncioId: number){
+        this.id = id;
+        this.message = message;
+        this.messageType = messageType;
+        this.anuncioId = anuncioId;
     }
 }

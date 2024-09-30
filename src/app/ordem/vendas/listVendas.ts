@@ -10,6 +10,7 @@ export class ListVendas{
     public somaCusto: number = 0;
     public somaVenda: number = 0;
     public somaLucro: number = 0;
+    public somaTaxaML: number = 0;
     searchField: string;
 
     constructor(anuncio: Anuncio, vendas: Venda[]){
@@ -23,6 +24,7 @@ export class ListVendas{
             if( venda.status == "paid"){
                 this.quantidade += venda.quantidade;
                 this.somaCusto += venda.custo;
+                this.somaTaxaML += venda.taxaML;
                 this.somaVenda += venda.precoDesconto;
                 this.somaLucro += venda.lucro;
             }else{

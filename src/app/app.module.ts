@@ -2,7 +2,7 @@ import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NgbDateParserFormatter, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAccordionModule, NgbDateParserFormatter, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AnuncioService } from './services/anuncios.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -74,6 +74,7 @@ registerLocaleData(localePt);
         ReactiveFormsModule,
         FormsModule,
         MatDialogModule,
+        NgbAccordionModule,
         NgxAwesomePopupModule.forRoot(),
         DialogConfigModule.forRoot(),
             ConfirmBoxConfigModule.forRoot({confirmBoxCoreConfig: {animationIn: AppearanceAnimation.NONE, animationOut: DisappearanceAnimation.NONE}}),
