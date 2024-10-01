@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
 import { CommonService } from './common.service';
-import { Anuncio } from './models/Anuncio';
+import { Anuncio, AnuncioMessage } from './models/Anuncio';
 import { AnuncioSimple } from './models/AnuncioSimple';
 import { AnuncioSimulation } from './models/AnuncioSimulation';
 import { environment } from 'src/environments/environment';
@@ -100,6 +100,18 @@ export class AnuncioService extends CommonService{
     };
 
     return this.http.get<Anuncio[]>(this.url + 'anuncioMessage', {params}).pipe(catchError(this.handleError));
+  }
+
+  createAnuncioMessage(anuncioMessage: AnuncioMessage, anuncioId: number): Observable<Anuncio>{
+    return this.http.post<Anuncio>(this.url + `/${anuncioId}/messages` , anuncioMessage).pipe(catchError(this.handleError));
+  }
+
+  updateAnuncioMessage(anuncioMessage: AnuncioMessage, anuncioId: number): Observable<Anuncio>{
+    return this.http.put<Anuncio>(this.url + `/${anuncioId}/messages` , anuncioMessage).pipe(catchError(this.handleError));
+  }
+
+  deleteAnuncioMessage(anuncioMessageId: number, anuncioId: number): Observable<Anuncio>{
+    return this.http.delete<Anuncio>(this.url + `/${anuncioId}/messages/${anuncioMessageId}`).pipe(catchError(this.handleError));
   }
 
 }

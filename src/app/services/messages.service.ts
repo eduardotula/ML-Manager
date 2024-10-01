@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
 import { CommonService } from './common.service';
-import { Anuncio } from './models/Anuncio';
+import { Anuncio, AnuncioMessage } from './models/Anuncio';
 import { AnuncioSimple } from './models/AnuncioSimple';
 import { AnuncioSimulation } from './models/AnuncioSimulation';
 import { environment } from 'src/environments/environment';
