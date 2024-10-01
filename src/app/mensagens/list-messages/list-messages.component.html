@@ -79,7 +79,7 @@
         <form [formGroup]="addMessageForm" class="form-group" (ngSubmit)="onAddMessage()">
             <div class="row">
                 <div >
-                    <label class="form-label" for="messageType">Tipo da mensagem:</label>
+                    <label class="form-label">Tipo da mensagem:</label>
                     <select class="form-select" formControlName="messageType">
                       <option *ngFor="let avaliableOption of getAvaliableOptionsByAnuncio(selectedAnuncioToAddMessage)">{{avaliableOption}}</option>
                     </select>
