@@ -33,10 +33,10 @@
 
         <ng-container matColumnDef="mensagem">
             <th mat-header-cell scope="col" *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let anuncio">
+            <td mat-cell class="col-mensagem" *matCellDef="let anuncio">
                 <div *ngFor="let anuncioMessage of anuncio.anuncioMessage" class="col">
                     <div ngbAccordion>
-                        <div ngbAccordionItem [collapsed]="false">
+                        <div ngbAccordionItem [collapsed]="true">
                             <h2 ngbAccordionHeader>
                                 <button ngbAccordionButton>{{anuncioMessage.messageType}}</button>
                             </h2>
@@ -81,7 +81,7 @@
                 <div >
                     <label class="form-label">Tipo da mensagem:</label>
                     <select class="form-select" formControlName="messageType">
-                      <option *ngFor="let avaliableOption of getAvaliableOptionsByAnuncio(selectedAnuncioToAddMessage)">{{avaliableOption}}</option>
+                      <option *ngFor="let avaliableOption of getAvaliableOptionsByAnuncio(selectedAnuncioToAddMessage)" [ngValue]="avaliableOption">{{avaliableOption}}</option>
                     </select>
                 </div>
                 <div>

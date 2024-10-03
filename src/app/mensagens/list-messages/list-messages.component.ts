@@ -62,7 +62,11 @@ export class ListMessagesComponent implements OnInit {
 
     onSaveMessage(anuncio: Anuncio, anuncioMessage: AnuncioMessage){
         if(anuncioMessage.message.length > 0){
-            
+            this.anuncioService.createAnuncioMessage(anuncioMessage, anuncio.id)
+            .subscribe({next: () => window.location.reload(), error: (err) => this.errorMsg = err.message})
+        }else{
+            this.anuncioService.deleteAnuncioMessage(anuncioMessage.id, anuncio.id)
+            .subscribe({next: () => window.location.reload(), error: (err) => this.errorMsg = err.message})
         }
     }
 
@@ -93,8 +97,8 @@ export class ListMessagesComponent implements OnInit {
         console.log(this.selectedAnuncioToAddMessage);
         let anuncioMessage = new AnuncioMessage(0, this.addMessageForm.value["message"], this.addMessageForm.value["messageType"], this.selectedAnuncioToAddMessage.id);
         this.anuncioService.createAnuncioMessage(anuncioMessage, this.selectedAnuncioToAddMessage.id).subscribe({next: () =>{
-
-        }});
+            window.location.reload();
+        }, error: (err) => this.errorMsg = err.message});
     }
 
     getImageForAnuncio(anuncio: Anuncio): any{
