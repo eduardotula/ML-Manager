@@ -43,7 +43,6 @@ export class CadastrarAnuncioComponent implements OnInit {
     public route: ActivatedRoute, public router: Router, private mlService: MercadoLivreService, private dialog: MatDialog,
     private mlImageService: ImageMLService) {
 
-      console.log(this.existingAnuncio)
     this.currentUserId = this.lsUser.getCurrentUser();
     this.filterForm = this.formBuilder.group({
       id: "",
@@ -63,7 +62,11 @@ export class CadastrarAnuncioComponent implements OnInit {
   ngOnInit() {
     this.resetPageState();
     this.loading = true;
-    console.log(this.existingAnuncio)
+    
+    this.filterForm.valueChanges.subscribe((value) => {
+      this.dataSource.filter = value;
+    });
+
     if (this.existingAnuncio) {
       this.productForm = this.formBuilder.group({
         mlId: [this.existingAnuncio.mlId, Validators.required],
@@ -77,9 +80,6 @@ export class CadastrarAnuncioComponent implements OnInit {
         this.containsRouteParams = true;
       }
 
-      this.filterForm.valueChanges.subscribe((value) => {
-        this.dataSource.filter = value;
-      });
     } else {
       //Filtra para que somente anuncios que não estão registrados sejam exibidos
       this.service.listAllAnunciosMercadoLivre(this.currentUserId, true).subscribe({
@@ -179,7 +179,8 @@ export class CadastrarAnuncioComponent implements OnInit {
 
       this.service.getAnuncioByMlId(anuncioSimple.mlId, this.currentUserId, false).subscribe({
         next: (existAnuncio) => {
-
+          console.log(this.containsRouteParams)
+          console.log(existAnuncio)
           if (!this.containsRouteParams && !existAnuncio) {
             this.createAnuncio(anuncioSimple);
           } else {
@@ -222,7 +223,7 @@ export class CadastrarAnuncioComponent implements OnInit {
     this.service.createAnuncioSearch(anuncioSimple, this.currentUserId).subscribe({
       next: () => {
         this.dataSource.data = this.dataSource.data.filter(anuncio => anuncio.id != anuncioSimple.mlId);
-        this.resetPageState();
+        this.resetPageState(); 
         this.resetForm();
       },
       error: (error) => {
@@ -238,8 +239,10 @@ export class CadastrarAnuncioComponent implements OnInit {
         if (navigateToHome)
           this.router.navigate([""]);
         this.updatedAnuncioEventEmmiter.emit(anuncio);
+        this.dataSource.data = this.dataSource.data.filter(anuncio => anuncio.id != anuncioSimple.mlId);
         this.resetPageState();
         this.resetForm();
+        
       },
       error: (error) => {
         this.errorMsg = error.message;

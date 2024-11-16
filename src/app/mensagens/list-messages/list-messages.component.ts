@@ -27,7 +27,7 @@ export class ListMessagesComponent implements OnInit {
     avaliableMessageType: string[] = ["devolucao_arrependimento", "devolucao_defeito", "mensagem_compra"];
     selectedAnuncioToAddMessage!: Anuncio;
     dataSource = new MatTableDataSource<Anuncio>([]);
-    displayedColumns: string[] = ["img","descricao", "mensagem", "botao+"];
+    displayedColumns: string[] = ["mlId","img","descricao", "mensagem", "botao+"];
     @ViewChild("tables") table!: MatTable<Anuncio>;
     @ViewChild(MatSort) sort!: MatSort;
     anuncioImages: ImageModel<Anuncio> = new ImageModel();
@@ -63,10 +63,18 @@ export class ListMessagesComponent implements OnInit {
     onSaveMessage(anuncio: Anuncio, anuncioMessage: AnuncioMessage){
         if(anuncioMessage.message.length > 0){
             this.anuncioService.createAnuncioMessage(anuncioMessage, anuncio.id)
-            .subscribe({next: () => window.location.reload(), error: (err) => this.errorMsg = err.message})
+            .subscribe({next: (returnedAnuncio) => this.reloadLine(returnedAnuncio), error: (err) => this.errorMsg = err.message})
         }else{
             this.anuncioService.deleteAnuncioMessage(anuncioMessage.id, anuncio.id)
-            .subscribe({next: () => window.location.reload(), error: (err) => this.errorMsg = err.message})
+            .subscribe({next: (returnedAnuncio) => this.reloadLine(returnedAnuncio), error: (err) => this.errorMsg = err.message})
+        }
+    }
+
+    reloadLine(newAnuncio: Anuncio){
+        let filteredValue = this.dataSource.data.filter((locateAnuncnio) => locateAnuncnio.id == newAnuncio.id);
+        if(filteredValue.length > 0){
+            Anuncio.setValuesWithAnuncio(filteredValue[0], newAnuncio);
+            this.table.renderRows();
         }
     }
 
@@ -96,8 +104,10 @@ export class ListMessagesComponent implements OnInit {
     onAddMessage(){
         console.log(this.selectedAnuncioToAddMessage);
         let anuncioMessage = new AnuncioMessage(0, this.addMessageForm.value["message"], this.addMessageForm.value["messageType"], this.selectedAnuncioToAddMessage.id);
-        this.anuncioService.createAnuncioMessage(anuncioMessage, this.selectedAnuncioToAddMessage.id).subscribe({next: () =>{
-            window.location.reload();
+        this.anuncioService.createAnuncioMessage(anuncioMessage, this.selectedAnuncioToAddMessage.id).subscribe({next: (updatedAnuncio) =>{
+            this.reloadLine(updatedAnuncio);
+            this.table.renderRows();
+            this.dialog.closeAll();
         }, error: (err) => this.errorMsg = err.message});
     }
 
