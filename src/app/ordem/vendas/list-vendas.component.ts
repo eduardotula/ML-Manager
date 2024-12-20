@@ -29,6 +29,7 @@ export class ListVendasComponent {
         "quantidade",
         "quantidadeCancelado",
         "somaTaxa",
+        "somaImposto",
         "somaVenda",
       'somaLucro',
       'btnDetail'
@@ -145,6 +146,13 @@ export class ListVendasComponent {
         var sum = 0;
         this.dataSource.filteredData.forEach(data =>{
             sum += data.somaTaxaML;
+        });
+        return sum;
+    }
+    sumImposto(){
+        var sum = 0;
+        this.dataSource.filteredData.forEach(data =>{
+            sum += data.somaImposto;
         });
         return sum;
     }

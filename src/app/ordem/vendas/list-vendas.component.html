@@ -57,6 +57,12 @@
         <td mat-footer-cell *matFooterCellDef> {{sumTaxaMl()  | currency: "BRL"}} </td>
       </div>
 
+      <div matColumnDef="somaImposto">
+        <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Imposto</th>
+        <td mat-cell *matCellDef="let venda" >{{venda.somaImposto | currency: "BRL"}}</td>
+        <td mat-footer-cell *matFooterCellDef> {{sumImposto()  | currency: "BRL"}} </td>
+      </div>
+
       <div matColumnDef="somaVenda">
         <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Venda Total</th>
         <td mat-cell *matCellDef="let venda">{{venda.somaVenda | currency: "BRL" }}</td>
